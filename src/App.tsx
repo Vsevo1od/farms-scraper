@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import DataGrid, { Column } from 'react-data-grid';
+import React, { useEffect, useMemo, useState } from 'react';
+import DataGrid, { Column, SortColumn } from 'react-data-grid';
 import './App.scss';
 import {
   avalanchePools,
@@ -50,11 +50,22 @@ function App() {
   type EntryBody = {
     totalApy: number,
   };
-  type AnyRow = Record<string, string | number>;
-  type AnyColumn = Column<AnyRow>;
 
-  const [rows, setRows] = useState<AnyRow[]>([]);
-  const [columns, setColumns] = useState<AnyColumn[]>([]);
+  type Row = {
+    id: string,
+    totalApyFormatted: string,
+    totalApy: number,
+    network: string,
+    app: string,
+    coin1: string,
+    coin2: string,
+  };
+
+  type AnyColumn = Column<Row>;
+
+  const [rows, setRows] = useState<readonly Row[]>([]);
+  const [columns, setColumns] = useState<readonly AnyColumn[]>([]);
+  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
 
   const loadBeefyData = async () => {
     const response = await fetch('https://api.beefy.finance/apy/breakdown');
@@ -65,15 +76,22 @@ function App() {
         .filter(([,body]) => body.totalApy)
         .map(([id, body]: [string, EntryBody]) => ({
           id,
-          totalApy: `${(body.totalApy * 100).toFixed(2)}%`,
+          totalApy: body.totalApy,
+          totalApyFormatted: `${(body.totalApy * 100).toFixed(2)}%`,
           network: getNetwork(id),
+          app: id.split('-')[0],
+          coin1: id.split('-')[1],
+          coin2: id.split('-')[2],
         })),
     );
 
     setColumns([
       { key: 'id', name: 'ID' },
-      { key: 'totalApy', name: 'Total APY' },
+      { key: 'totalApyFormatted', name: 'Total APY' },
       { key: 'network', name: 'Network' },
+      { key: 'app', name: 'App' },
+      { key: 'coin1', name: 'Coin 1' },
+      { key: 'coin2', name: 'Coin 2' },
     ]);
   };
 
@@ -81,9 +99,59 @@ function App() {
     loadBeefyData();
   }, []);
 
+  type Comparator = (a: Row, b: Row) => number;
+
+  function getComparatorByColumn(sortColumn: keyof Row): Comparator {
+    switch (sortColumn) {
+      case 'app':
+      case 'coin1':
+      case 'coin2':
+      case 'id':
+      case 'network':
+        return (a, b) => a[sortColumn].localeCompare(b[sortColumn]);
+      case 'totalApyFormatted':
+        return (a, b) => a.totalApy - b.totalApy;
+      default:
+        throw new Error(`unsupported sortColumn: "${sortColumn}"`);
+    }
+  }
+
+  const sortRows = (): readonly Row[] => {
+    if (sortColumns.length === 0) {
+      return rows;
+    }
+
+    const compareRowsBySortColumns = (a: Row, b: Row): number => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const { columnKey, direction } of sortColumns) {
+        const comparator = getComparatorByColumn(columnKey as keyof Row);
+        const compareResult = comparator(a, b);
+
+        if (compareResult !== 0) {
+          return direction === 'ASC' ? compareResult : -compareResult;
+        }
+      }
+      return 0;
+    };
+
+    return [...rows].sort(compareRowsBySortColumns);
+  };
+
+  const sortedRows = useMemo(sortRows, [rows, sortColumns]);
+
   return (
     <div className="App">
-      <DataGrid rows={rows} columns={columns} style={{ height: '100%' }} />
+      <DataGrid
+        rows={sortedRows}
+        columns={columns}
+        style={{ height: '100%' }}
+        defaultColumnOptions={{
+          sortable: true,
+          resizable: true,
+        }}
+        sortColumns={sortColumns}
+        onSortColumnsChange={setSortColumns}
+      />
     </div>
   );
 }
