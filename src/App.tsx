@@ -82,7 +82,8 @@ function App() {
           app: id.split('-')[0],
           coin1: id.split('-')[1],
           coin2: id.split('-')[2],
-        })),
+        }))
+        .filter(({ network }) => network),
     );
 
     setColumns([
