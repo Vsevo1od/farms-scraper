@@ -1,5 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import DataGrid, { Column, SortColumn } from 'react-data-grid';
+import React, {
+  createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState,
+} from 'react';
+import DataGrid, { Column, HeaderRendererProps, SortColumn } from 'react-data-grid';
 import './App.scss';
 import {
   avalanchePools,
@@ -46,26 +48,90 @@ const getNetwork = (requestedId: string): string => {
   return '';
 };
 
+function formatCoinsAsString(coin1: string, coin2: string) {
+  if (!coin2) {
+    return coin1;
+  }
+
+  const isCoin1NameLessThanCoin2Name = coin1.localeCompare(coin2) >= 0;
+  return isCoin1NameLessThanCoin2Name ? `${coin1}/${coin2}` : `${coin2}/${coin1}`;
+}
+
+type EntryBody = {
+  totalApy: number,
+};
+
+type Row = {
+  id: string,
+  totalApyFormatted: string,
+  totalApy: number,
+  network: string,
+  app: string,
+  coins: string,
+};
+
+type AnyColumn = Column<Row>;
+
+interface Filter extends Omit<Row, 'totalApyFormatted' | 'totalApy' | 'network' | 'app' | 'coins'> {
+  enabled: boolean;
+}
+
+// Context is needed to read filter values otherwise columns are
+// re-created when filters are changed and filter loses focus
+const FilterContext = createContext<Filter | undefined>(undefined);
+
+function useFocusRef<T extends HTMLOrSVGElement>(isSelected: boolean) {
+  const ref = useRef<T>(null);
+
+  useLayoutEffect(() => {
+    if (!isSelected) return;
+    ref.current?.focus({ preventScroll: true });
+  }, [isSelected]);
+
+  return {
+    ref,
+    tabIndex: isSelected ? 0 : -1,
+  };
+}
+
+function inputStopPropagation(event: React.KeyboardEvent<HTMLInputElement>) {
+  if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+    event.stopPropagation();
+  }
+}
+
+function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
+  isCellSelected,
+  column,
+  children,
+}: HeaderRendererProps<R, SR> & {
+  children: (args: {
+    ref: React.RefObject<T>;
+    tabIndex: number;
+    filters: Filter;
+  }) => React.ReactElement;
+}) {
+  const filters = useContext(FilterContext)!;
+  const { ref, tabIndex } = useFocusRef<T>(isCellSelected);
+
+  return (
+    <>
+      <div>{column.name}</div>
+      {filters.enabled && <div>{children({ ref, tabIndex, filters })}</div>}
+    </>
+  );
+}
+
+const FILTER_COLUMN_CLASS_NAME = 'filter-cell';
+
 function App() {
-  type EntryBody = {
-    totalApy: number,
-  };
-
-  type Row = {
-    id: string,
-    totalApyFormatted: string,
-    totalApy: number,
-    network: string,
-    app: string,
-    coin1: string,
-    coin2?: string,
-  };
-
-  type AnyColumn = Column<Row>;
-
   const [rows, setRows] = useState<readonly Row[]>([]);
   const [columns, setColumns] = useState<readonly AnyColumn[]>([]);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+  const [filters, setFilters] = useState<Filter>({
+    id: '',
+    enabled: true,
+  });
 
   const loadBeefyData = async () => {
     const response = await fetch('https://api.beefy.finance/apy/breakdown');
@@ -74,25 +140,50 @@ function App() {
     setRows(
       Object.entries(responseJson)
         .filter(([,body]) => body.totalApy)
-        .map(([id, body]: [string, EntryBody]) => ({
-          id,
-          totalApy: body.totalApy,
-          totalApyFormatted: `${(body.totalApy * 100).toFixed(2)}%`,
-          network: getNetwork(id),
-          app: id.split('-')[0],
-          coin1: id.split('-')[1],
-          coin2: id.split('-')[2],
-        }))
+        .map(([id, { totalApy }]: [string, EntryBody]) => {
+          const [app, coin1, coin2] = id.split('-');
+
+          return {
+            id,
+            totalApy,
+            totalApyFormatted: `${(totalApy * 100).toFixed(2)}%`,
+            network: getNetwork(id),
+            app,
+            coins: formatCoinsAsString(coin1, coin2),
+          };
+        })
         .filter(({ network }) => network),
     );
 
     setColumns([
-      { key: 'id', name: 'ID' },
+      {
+        key: 'id',
+        name: 'ID',
+        headerCellClass: FILTER_COLUMN_CLASS_NAME,
+        headerRenderer: (p) => (
+          // TODO
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+            {({ filters: theFilters, ...rest }) => (
+              <input
+                // TODO
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...rest}
+                value={theFilters.id}
+                onChange={(e) => setFilters({
+                  ...theFilters,
+                  id: e.target.value,
+                })}
+                onKeyDown={inputStopPropagation}
+              />
+            )}
+          </FilterRenderer>
+        ),
+      },
       { key: 'totalApyFormatted', name: 'Total APY' },
       { key: 'network', name: 'Network' },
       { key: 'app', name: 'App' },
-      { key: 'coin1', name: 'Coin 1' },
-      { key: 'coin2', name: 'Coin 2' },
+      { key: 'coins', name: 'Coins' },
     ]);
   };
 
@@ -105,12 +196,10 @@ function App() {
   function getComparatorByColumn(sortColumn: keyof Row): Comparator {
     switch (sortColumn) {
       case 'app':
-      case 'coin1':
+      case 'coins':
       case 'id':
       case 'network':
         return (a, b) => a[sortColumn].localeCompare(b[sortColumn]);
-      case 'coin2':
-        return (a, b) => (a[sortColumn] || '').localeCompare(b[sortColumn] || '');
       case 'totalApyFormatted':
         return (a, b) => a.totalApy - b.totalApy;
       default:
@@ -141,19 +230,34 @@ function App() {
 
   const sortedRows = useMemo(sortRows, [rows, sortColumns]);
 
+  const isRowShowed = (row: Row): boolean => (filters.id ? row.id.includes(filters.id) : true);
+  const filterRows = () => sortedRows.filter(isRowShowed);
+  const filteredSortedRows = useMemo(filterRows, [sortedRows, filters]);
+
+  // TODO use
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function selectStopPropagation(event: React.KeyboardEvent<HTMLSelectElement>) {
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+      event.stopPropagation();
+    }
+  }
+
   return (
     <div className="App">
-      <DataGrid
-        rows={sortedRows}
-        columns={columns}
-        style={{ height: '100%' }}
-        defaultColumnOptions={{
-          sortable: true,
-          resizable: true,
-        }}
-        sortColumns={sortColumns}
-        onSortColumnsChange={setSortColumns}
-      />
+      <FilterContext.Provider value={filters}>
+        <DataGrid
+          rows={filteredSortedRows}
+          columns={columns}
+          style={{ height: '100%', lineHeight: '35px' }}
+          defaultColumnOptions={{
+            sortable: true,
+            resizable: true,
+          }}
+          sortColumns={sortColumns}
+          onSortColumnsChange={setSortColumns}
+          headerRowHeight={filters.enabled ? 70 : undefined}
+        />
+      </FilterContext.Provider>
     </div>
   );
 }
