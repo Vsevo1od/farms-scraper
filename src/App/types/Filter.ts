@@ -1,5 +1,5 @@
 import { Row } from './Row';
 
-export interface Filter extends Omit<Row, 'totalApyFormatted' | 'totalApy' | 'network' | 'app' | 'coins'> {
+export interface Filter extends Omit<Row, 'totalApyFormatted' | 'network' | 'app' | 'coins'> {
   enabled: boolean;
 }

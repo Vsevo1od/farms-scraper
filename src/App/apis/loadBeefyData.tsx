@@ -65,7 +65,32 @@ export default async (
         </FilterRenderer>
       ),
     },
-    { key: 'totalApyFormatted', name: 'Total APY' },
+    {
+      key: 'totalApyFormatted',
+      name: 'Total APY',
+      headerCellClass: FILTER_COLUMN_CLASS_NAME,
+      headerRenderer: (props) => (// TODO
+      // eslint-disable-next-line react/jsx-props-no-spreading
+        <FilterRenderer<Row, unknown, HTMLInputElement> {...props}>
+          {({ filters: theFilters, ...rest }) => (
+            <input
+            // TODO
+            // eslint-disable-next-line react/jsx-props-no-spreading
+              {...rest}
+              value={theFilters.totalApy || undefined}
+              type="number"
+              onChange={(e) => setFilters({
+                ...theFilters,
+                totalApy: Number.isFinite(e.target.valueAsNumber)
+                  ? e.target.valueAsNumber
+                  : 0,
+              })}
+              onKeyDown={inputStopPropagation}
+            />
+          )}
+        </FilterRenderer>
+      ),
+    },
     { key: 'network', name: 'Network' },
     { key: 'app', name: 'App' },
     { key: 'coins', name: 'Coins' },

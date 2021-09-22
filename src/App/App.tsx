@@ -14,6 +14,7 @@ function App() {
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [filters, setFilters] = useState<Filter>({
     id: '',
+    totalApy: 0,
     enabled: true,
   });
 
@@ -31,7 +32,9 @@ function App() {
 
   const sortedRows = useMemo(sortRows, [rows, sortColumns]);
 
-  const isRowShowed = (row: Row): boolean => (filters.id ? row.id.includes(filters.id) : true);
+  const isRowShowed = (row: Row): boolean => (filters.id ? row.id.includes(filters.id) : true)
+  && ((row.totalApy * 100) >= filters.totalApy);
+
   const filterRows = () => sortedRows.filter(isRowShowed);
   const filteredSortedRows = useMemo(filterRows, [sortedRows, filters]);
 
