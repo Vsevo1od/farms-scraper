@@ -58,7 +58,7 @@ function App() {
     network: string,
     app: string,
     coin1: string,
-    coin2: string,
+    coin2?: string,
   };
 
   type AnyColumn = Column<Row>;
@@ -106,10 +106,11 @@ function App() {
     switch (sortColumn) {
       case 'app':
       case 'coin1':
-      case 'coin2':
       case 'id':
       case 'network':
         return (a, b) => a[sortColumn].localeCompare(b[sortColumn]);
+      case 'coin2':
+        return (a, b) => (a[sortColumn] || '').localeCompare(b[sortColumn] || '');
       case 'totalApyFormatted':
         return (a, b) => a.totalApy - b.totalApy;
       default:
