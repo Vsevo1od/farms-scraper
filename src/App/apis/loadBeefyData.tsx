@@ -15,6 +15,12 @@ function inputStopPropagation(event: React.KeyboardEvent<HTMLInputElement>) {
   }
 }
 
+function inputNumberStopPropagation(event: React.KeyboardEvent<HTMLInputElement>) {
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+    event.stopPropagation();
+  }
+}
+
 export default async (
   setRows: (rows: Row[]) => void,
   setColumns: (columns: AnyColumn[]) => void,
@@ -85,7 +91,7 @@ export default async (
                   ? e.target.valueAsNumber
                   : 0,
               })}
-              onKeyDown={inputStopPropagation}
+              onKeyDown={inputNumberStopPropagation}
             />
           )}
         </FilterRenderer>
