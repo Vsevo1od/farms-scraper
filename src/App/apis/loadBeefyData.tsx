@@ -87,6 +87,7 @@ export default async (
               {...rest}
               value={theFilters.totalApy}
               type="number"
+              min="0"
               onChange={(e) => setFilters({
                 ...theFilters,
                 totalApy: Number.isFinite(e.target.valueAsNumber)
