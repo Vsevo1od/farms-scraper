@@ -38,14 +38,6 @@ function App() {
   const filterRows = () => sortedRows.filter(isRowShowed);
   const filteredSortedRows = useMemo(filterRows, [sortedRows, filters]);
 
-  // TODO use
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function selectStopPropagation(event: React.KeyboardEvent<HTMLSelectElement>) {
-    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
-      event.stopPropagation();
-    }
-  }
-
   return (
     <div className="App">
       <FilterContext.Provider value={filters}>
