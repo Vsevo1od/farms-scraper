@@ -52,7 +52,8 @@ export default async (
       key: 'id',
       name: 'ID',
       headerCellClass: FILTER_COLUMN_CLASS_NAME,
-      headerRenderer: (props) => (// TODO
+      headerRenderer: (props) => (
+        // TODO
         // eslint-disable-next-line react/jsx-props-no-spreading
         <FilterRenderer<Row, unknown, HTMLInputElement> {...props}>
           {({ filters: theFilters, ...rest }) => (
@@ -75,15 +76,16 @@ export default async (
       key: 'totalApyFormatted',
       name: 'Total APY',
       headerCellClass: FILTER_COLUMN_CLASS_NAME,
-      headerRenderer: (props) => (// TODO
-      // eslint-disable-next-line react/jsx-props-no-spreading
+      headerRenderer: (props) => (
+        // TODO
+        // eslint-disable-next-line react/jsx-props-no-spreading
         <FilterRenderer<Row, unknown, HTMLInputElement> {...props}>
           {({ filters: theFilters, ...rest }) => (
             <input
             // TODO
             // eslint-disable-next-line react/jsx-props-no-spreading
               {...rest}
-              value={theFilters.totalApy || undefined}
+              value={theFilters.totalApy}
               type="number"
               onChange={(e) => setFilters({
                 ...theFilters,
