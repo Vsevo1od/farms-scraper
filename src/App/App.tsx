@@ -1,7 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useEffect, useMemo, useState,
+} from 'react';
 import DataGrid, { SortColumn } from 'react-data-grid';
 import loadBeefyData from './apis/loadBeefyData';
 import './App.scss';
+import fixScrollInsideNumberInputScrollsPage from './filter/fixScrollInsideNumberInputScrollsPage';
 import { FilterContext } from './FilterRenderer/FilterRenderer';
 import getCompareRowsBySortColumnsFunction from './sort/getCompareRowsBySortColumnsFunction';
 import { AnyColumn } from './types/Column';
@@ -21,6 +24,8 @@ function App() {
   useEffect((): void => {
     loadBeefyData(setRows, setColumns, setFilters);
   }, []);
+
+  fixScrollInsideNumberInputScrollsPage();
 
   const sortRows = (): readonly Row[] => {
     if (sortColumns.length === 0) {
