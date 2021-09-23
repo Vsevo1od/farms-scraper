@@ -44,12 +44,15 @@ function App() {
   const filteredSortedRows = useMemo(filterRows, [sortedRows, filters]);
 
   return (
-    <div className="App">
+    <div className="app">
       <FilterContext.Provider value={filters}>
         <DataGrid
           rows={filteredSortedRows}
           columns={columns}
-          style={{ height: '100%', lineHeight: '35px' }}
+          style={{
+            height: '100%',
+            lineHeight: '35px',
+          }}
           defaultColumnOptions={{
             sortable: true,
             resizable: true,

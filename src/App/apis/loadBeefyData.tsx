@@ -7,6 +7,7 @@ import { Row } from '../types/Row';
 import { AnyColumn } from '../types/Column';
 import { Filter } from '../types/Filter';
 
+// TODO inline css or use constants
 const FILTER_COLUMN_CLASS_NAME = 'filter-cell';
 
 function inputStopPropagation(event: React.KeyboardEvent<HTMLInputElement>) {

@@ -1,4 +1,4 @@
-#root {
+.app {
   height: 100%;
   left: 0;
   position: absolute;
@@ -6,10 +6,15 @@
   width: 100%;
 }
 
-.App {
-    height: 100%;
+.filter-cell {
+  line-height: 35px;
 }
 
-.filter-cell {
-    line-height: 35px;
+.rdg-sort-arrow {
+  fill: currentColor;
+  margin-left: 10px;
+
+  > path {
+    transition: d 0.1s;
+  }  
 }

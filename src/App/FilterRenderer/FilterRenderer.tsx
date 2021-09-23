@@ -7,10 +7,16 @@ import { Filter } from '../types/Filter';
 // re-created when filters are changed and filter loses focus
 export const FilterContext = createContext<Filter | undefined>(undefined);
 
-function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
+// TODO inline css or constants
+const ARROW_CLASS_NAME = 'rdg-sort-arrow';
+
+function FilterRenderer<R, SR, T extends HTMLDivElement>({
   isCellSelected,
   column,
   children,
+  onSort,
+  sortDirection,
+  priority,
 }: HeaderRendererProps<R, SR> & {
   children: (args: {
     ref: React.RefObject<T>;
@@ -21,9 +27,35 @@ function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   const filters = useContext(FilterContext)!;
   const { ref, tabIndex } = useFocusRef<T>(isCellSelected);
 
+  function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
+    if (event.key === ' ' || event.key === 'Enter') {
+      // stop propagation to prevent scrolling
+      event.preventDefault();
+      onSort(event.ctrlKey || event.metaKey);
+    }
+  }
+
+  function handleClick(event: React.MouseEvent<HTMLSpanElement>) {
+    onSort(event.ctrlKey || event.metaKey);
+  }
+
   return (
     <>
-      <div>{column.name}</div>
+      <div
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        role="button"
+        ref={ref}
+        tabIndex={tabIndex}
+      >
+        {column.name}
+        {sortDirection !== undefined && (
+          <svg viewBox="0 0 12 8" width="12" height="8" className={ARROW_CLASS_NAME} aria-hidden>
+            <path d={sortDirection === 'ASC' ? 'M0 8 6 0 12 8' : 'M0 0 6 8 12 0'} />
+          </svg>
+        )}
+        {priority}
+      </div>
       {filters.enabled && <div>{children({ ref, tabIndex, filters })}</div>}
     </>
   );
