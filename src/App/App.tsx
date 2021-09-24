@@ -2,7 +2,7 @@ import React, {
   useEffect, useMemo, useState,
 } from 'react';
 import DataGrid, { SortColumn } from 'react-data-grid';
-import loadBeefyData from './apis/loadBeefyData';
+import loadBeefyData, { ALL_NETWORKS } from './apis/loadBeefyData';
 import './App.scss';
 import fixScrollInsideNumberInputScrollsPage from './filter/fixScrollInsideNumberInputScrollsPage';
 import { FilterContext } from './FilterRenderer/FilterRenderer';
@@ -19,6 +19,9 @@ function App() {
     id: '',
     totalApy: '',
     enabled: true,
+    network: ALL_NETWORKS,
+    app: '',
+    coins: '',
   });
 
   useEffect((): void => {
@@ -37,8 +40,11 @@ function App() {
 
   const sortedRows = useMemo(sortRows, [rows, sortColumns]);
 
-  const isRowShowed = (row: Row): boolean => (filters.id ? row.id.includes(filters.id) : true)
-  && ((row.totalApy * 100) >= (filters.totalApy || 0));
+  const isRowShowed = (row: Row): boolean => row.id.includes(filters.id)
+  && ((row.totalApy * 100) >= (filters.totalApy || 0))
+  && (filters.network === ALL_NETWORKS ? true : row.network.includes(filters.network))
+  && row.app.includes(filters.app)
+  && row.coins.includes(filters.coins);
 
   const filterRows = () => sortedRows.filter(isRowShowed);
   const filteredSortedRows = useMemo(filterRows, [sortedRows, filters]);

@@ -10,7 +10,7 @@ export const FilterContext = createContext<Filter | undefined>(undefined);
 // TODO inline css or constants
 const ARROW_CLASS_NAME = 'rdg-sort-arrow';
 
-function FilterRenderer<R, SR, T extends HTMLDivElement>({
+function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   isCellSelected,
   column,
   children,
@@ -45,8 +45,7 @@ function FilterRenderer<R, SR, T extends HTMLDivElement>({
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         role="button"
-        ref={ref}
-        tabIndex={tabIndex}
+        tabIndex={0}
       >
         {column.name}
         {sortDirection !== undefined && (
