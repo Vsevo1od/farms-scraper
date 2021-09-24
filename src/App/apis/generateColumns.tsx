@@ -5,9 +5,7 @@ import FilterRenderer from '../FilterRenderer/FilterRenderer';
 import { AnyColumn } from '../types/Column';
 import { Filters } from '../types/Filters';
 import { Row } from '../types/Row';
-
-// TODO inline css or use constants
-const FILTER_COLUMN_CLASS_NAME = 'filter-cell';
+import { FILTER_COLUMN_CLASS_NAME } from '../constants';
 
 function inputStopPropagation(event: React.KeyboardEvent<HTMLElement>) {
   if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
@@ -34,8 +32,6 @@ const getNetworksToShow = (rows: Row[], selectedNetwork: string): string[] => {
 
 export default (rows: Row[], filters: Filters, setFilters: (filters: Filters) => void)
 : AnyColumn[] => {
-  // TODO filter in real time from sortedFilteredRows
-
   const networks = getNetworksToShow(rows, filters.network);
   const apps = sortedUniq(
     rows.map(({ app }) => app).sort(),

@@ -1,14 +1,12 @@
 import React, { createContext, useContext } from 'react';
 import { HeaderRendererProps } from 'react-data-grid';
 import useFocusRef from '../../utils/useFocusRef';
+import { ARROW_CLASS_NAME } from '../constants';
 import { Filters } from '../types/Filters';
 
 // Context is needed to read filter values otherwise columns are
 // re-created when filters are changed and filter loses focus
 export const FilterContext = createContext<Filters | undefined>(undefined);
-
-// TODO inline css or constants
-const ARROW_CLASS_NAME = 'rdg-sort-arrow';
 
 function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   isCellSelected,
