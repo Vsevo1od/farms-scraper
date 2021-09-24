@@ -3,23 +3,24 @@ import React, {
 } from 'react';
 import DataGrid, { SortColumn } from 'react-data-grid';
 import generateColumns from './apis/generateColumns';
-import loadData, { ALL_NETWORKS } from './apis/loadAllData';
+import loadData from './apis/loadAllData';
 import './App.scss';
+import Network from './enums/Network';
 import fixScrollInsideNumberInputScrollsPage from './filter/fixScrollInsideNumberInputScrollsPage';
 import { FilterContext } from './FilterRenderer/FilterRenderer';
 import getCompareRowsBySortColumnsFunction from './sort/getCompareRowsBySortColumnsFunction';
 import { AnyColumn } from './types/Column';
-import { Filter } from './types/Filter';
+import { Filters } from './types/Filters';
 import { Row } from './types/Row';
 
 function App() {
   const [rows, setRows] = useState<readonly Row[]>([]);
   const [columns, setColumns] = useState<readonly AnyColumn[]>([]);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
-  const [filters, setFilters] = useState<Filter>({
+  const [filters, setFilters] = useState<Filters>({
     totalApy: '',
     enabled: true,
-    network: ALL_NETWORKS,
+    network: Network.ALL,
     app: '',
     coins: '',
   });
@@ -41,7 +42,7 @@ function App() {
   const sortedRows = useMemo(sortRows, [rows, sortColumns]);
 
   const isRowShowed = (row: Row): boolean => (filters.totalApy || 0) <= row.totalApy
-  && (filters.network === ALL_NETWORKS ? true : row.network.includes(filters.network))
+  && (filters.network === Network.ALL ? true : row.network.includes(filters.network))
   && row.app.includes(filters.app)
   && row.coins.includes(filters.coins);
 
@@ -49,7 +50,7 @@ function App() {
   const filteredSortedRows = useMemo(filterRows, [sortedRows, filters]);
 
   const updateColumns = () => {
-    const updatedColumns = generateColumns(filteredSortedRows, setFilters);
+    const updatedColumns = generateColumns(filteredSortedRows, filters, setFilters);
     setColumns(updatedColumns);
   };
   useMemo(updateColumns, [filteredSortedRows]);

@@ -1,11 +1,11 @@
 import React, { createContext, useContext } from 'react';
 import { HeaderRendererProps } from 'react-data-grid';
 import useFocusRef from '../../utils/useFocusRef';
-import { Filter } from '../types/Filter';
+import { Filters } from '../types/Filters';
 
 // Context is needed to read filter values otherwise columns are
 // re-created when filters are changed and filter loses focus
-export const FilterContext = createContext<Filter | undefined>(undefined);
+export const FilterContext = createContext<Filters | undefined>(undefined);
 
 // TODO inline css or constants
 const ARROW_CLASS_NAME = 'rdg-sort-arrow';
@@ -21,7 +21,7 @@ function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   children: (args: {
     ref: React.RefObject<T>;
     tabIndex: number;
-    filters: Filter;
+    filters: Filters;
   }) => React.ReactElement;
 }) {
   const filters = useContext(FilterContext)!;

@@ -1,9 +1,9 @@
-import { uniq } from 'lodash';
 import React from 'react';
+import sortedUniq from 'lodash/sortedUniq';
 import Network from '../enums/Network';
 import FilterRenderer from '../FilterRenderer/FilterRenderer';
 import { AnyColumn } from '../types/Column';
-import { Filter } from '../types/Filter';
+import { Filters } from '../types/Filters';
 import { Row } from '../types/Row';
 
 // TODO inline css or use constants
@@ -23,12 +23,26 @@ function inputNumberStopPropagation(event: React.KeyboardEvent<HTMLElement>) {
 
 const selectStopPropagation = inputNumberStopPropagation;
 
-export default (rows: Row[], setFilters: (filter: Filter) => void): AnyColumn[] => {
+const getNetworksToShow = (rows: Row[], selectedNetwork: string): string[] => {
+  const networksToShowWithDuplicates = rows.map(({ network }) => network);
+  if (selectedNetwork && selectedNetwork !== Network.ALL) {
+    networksToShowWithDuplicates.push(selectedNetwork);
+  }
+
+  return sortedUniq(networksToShowWithDuplicates.sort());
+};
+
+export default (rows: Row[], filters: Filters, setFilters: (filters: Filters) => void)
+: AnyColumn[] => {
   // TODO filter in real time from sortedFilteredRows
 
-  const networks = uniq(rows.map(({ network }) => network)).sort();
-  const apps = uniq(rows.map(({ app }) => app)).sort();
-  const coins = uniq(rows.map((row) => row.coins.split('/')).flat()).sort();
+  const networks = getNetworksToShow(rows, filters.network);
+  const apps = sortedUniq(
+    rows.map(({ app }) => app).sort(),
+  );
+  const coins = sortedUniq(
+    rows.map((row) => row.coins.split('/')).flat().sort(),
+  );
 
   return [
     {
@@ -67,14 +81,14 @@ export default (rows: Row[], setFilters: (filter: Filter) => void): AnyColumn[] 
         // TODO
         // eslint-disable-next-line react/jsx-props-no-spreading
         <FilterRenderer<Row, unknown, HTMLSelectElement> {...props}>
-          {({ filters, ...rest }) => (
+          {({ filters: theFilters, ...rest }) => (
             <select
                     // TODO
                     // eslint-disable-next-line react/jsx-props-no-spreading
               {...rest}
-              value={filters.network}
+              value={theFilters.network}
               onChange={(e) => setFilters({
-                ...filters,
+                ...theFilters,
                 network: e.target.value,
               })}
               onKeyDown={selectStopPropagation}
@@ -103,15 +117,15 @@ export default (rows: Row[], setFilters: (filter: Filter) => void): AnyColumn[] 
         // TODO
         // eslint-disable-next-line react/jsx-props-no-spreading
         <FilterRenderer<Row, unknown, HTMLInputElement> {...props}>
-          {({ filters, ...rest }) => (
+          {({ filters: theFilters, ...rest }) => (
             <>
               <input
                       // TODO
                       // eslint-disable-next-line react/jsx-props-no-spreading
                 {...rest}
-                value={filters.app}
+                value={theFilters.app}
                 onChange={(e) => setFilters({
-                  ...filters,
+                  ...theFilters,
                   app: e.target.value,
                 })}
                 onKeyDown={inputStopPropagation}
@@ -135,15 +149,15 @@ export default (rows: Row[], setFilters: (filter: Filter) => void): AnyColumn[] 
         // TODO
         // eslint-disable-next-line react/jsx-props-no-spreading
         <FilterRenderer<Row, unknown, HTMLInputElement> {...props}>
-          {({ filters, ...rest }) => (
+          {({ filters: theFilters, ...rest }) => (
             <>
               <input
                       // TODO
                       // eslint-disable-next-line react/jsx-props-no-spreading
                 {...rest}
-                value={filters.coins}
+                value={theFilters.coins}
                 onChange={(e) => setFilters({
-                  ...filters,
+                  ...theFilters,
                   coins: e.target.value,
                 })}
                 onKeyDown={inputStopPropagation}
