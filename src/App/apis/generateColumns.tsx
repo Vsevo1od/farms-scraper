@@ -45,15 +45,28 @@ export default (rows: Row[], filters: Filters, setFilters: (filters: Filters) =>
       key: 'totalApyFormatted',
       name: 'Total APY',
       headerCellClass: FILTER_COLUMN_CLASS_NAME,
-      headerRenderer: (props) => (
-        // TODO
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <FilterRenderer<Row, unknown, HTMLInputElement> {...props}>
-          {({ filters: theFilters, ...rest }) => (
+      headerRenderer: ({
+        isCellSelected,
+        column,
+        onSort,
+        sortDirection,
+        priority,
+        allRowsSelected,
+        onAllRowsSelectionChange,
+      }) => (
+        <FilterRenderer<Row, unknown, HTMLInputElement>
+          isCellSelected={isCellSelected}
+          column={column}
+          onSort={onSort}
+          sortDirection={sortDirection}
+          priority={priority}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        >
+          {({ filters: theFilters, tabIndex, ref }) => (
             <input
-                    // TODO
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-              {...rest}
+              tabIndex={tabIndex}
+              ref={ref}
               value={theFilters.totalApy}
               type="number"
               min="0"
@@ -73,15 +86,28 @@ export default (rows: Row[], filters: Filters, setFilters: (filters: Filters) =>
       key: 'network',
       name: 'Network',
       headerCellClass: FILTER_COLUMN_CLASS_NAME,
-      headerRenderer: (props) => (
-        // TODO
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <FilterRenderer<Row, unknown, HTMLSelectElement> {...props}>
-          {({ filters: theFilters, ...rest }) => (
+      headerRenderer: ({
+        isCellSelected,
+        column,
+        onSort,
+        sortDirection,
+        priority,
+        allRowsSelected,
+        onAllRowsSelectionChange,
+      }) => (
+        <FilterRenderer<Row, unknown, HTMLSelectElement>
+          isCellSelected={isCellSelected}
+          column={column}
+          onSort={onSort}
+          sortDirection={sortDirection}
+          priority={priority}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        >
+          {({ filters: theFilters, tabIndex, ref }) => (
             <select
-                    // TODO
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-              {...rest}
+              tabIndex={tabIndex}
+              ref={ref}
               value={theFilters.network}
               onChange={(e) => setFilters({
                 ...theFilters,
@@ -109,16 +135,29 @@ export default (rows: Row[], filters: Filters, setFilters: (filters: Filters) =>
       key: 'app',
       name: 'App',
       headerCellClass: FILTER_COLUMN_CLASS_NAME,
-      headerRenderer: (props) => (
-        // TODO
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <FilterRenderer<Row, unknown, HTMLInputElement> {...props}>
-          {({ filters: theFilters, ...rest }) => (
+      headerRenderer: ({
+        isCellSelected,
+        column,
+        onSort,
+        sortDirection,
+        priority,
+        allRowsSelected,
+        onAllRowsSelectionChange,
+      }) => (
+        <FilterRenderer<Row, unknown, HTMLInputElement>
+          isCellSelected={isCellSelected}
+          column={column}
+          onSort={onSort}
+          sortDirection={sortDirection}
+          priority={priority}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        >
+          {({ filters: theFilters, tabIndex, ref }) => (
             <>
               <input
-                      // TODO
-                      // eslint-disable-next-line react/jsx-props-no-spreading
-                {...rest}
+                tabIndex={tabIndex}
+                ref={ref}
                 value={theFilters.app}
                 onChange={(e) => setFilters({
                   ...theFilters,
@@ -141,16 +180,29 @@ export default (rows: Row[], filters: Filters, setFilters: (filters: Filters) =>
       key: 'coins',
       name: 'Coins',
       headerCellClass: FILTER_COLUMN_CLASS_NAME,
-      headerRenderer: (props) => (
-        // TODO
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <FilterRenderer<Row, unknown, HTMLInputElement> {...props}>
-          {({ filters: theFilters, ...rest }) => (
+      headerRenderer: ({
+        isCellSelected,
+        column,
+        onSort,
+        sortDirection,
+        priority,
+        allRowsSelected,
+        onAllRowsSelectionChange,
+      }) => (
+        <FilterRenderer<Row, unknown, HTMLInputElement>
+          isCellSelected={isCellSelected}
+          column={column}
+          onSort={onSort}
+          sortDirection={sortDirection}
+          priority={priority}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        >
+          {({ filters: theFilters, tabIndex, ref }) => (
             <>
               <input
-                      // TODO
-                      // eslint-disable-next-line react/jsx-props-no-spreading
-                {...rest}
+                tabIndex={tabIndex}
+                ref={ref}
                 value={theFilters.coins}
                 onChange={(e) => setFilters({
                   ...theFilters,
