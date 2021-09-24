@@ -16,7 +16,6 @@ function App() {
   const [columns, setColumns] = useState<readonly AnyColumn[]>([]);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [filters, setFilters] = useState<Filter>({
-    id: '',
     totalApy: '',
     enabled: true,
     network: ALL_NETWORKS,
@@ -40,8 +39,7 @@ function App() {
 
   const sortedRows = useMemo(sortRows, [rows, sortColumns]);
 
-  const isRowShowed = (row: Row): boolean => row.id.includes(filters.id)
-  && ((row.totalApy * 100) >= (filters.totalApy || 0))
+  const isRowShowed = (row: Row): boolean => ((row.totalApy * 100) >= (filters.totalApy || 0))
   && (filters.network === ALL_NETWORKS ? true : row.network.includes(filters.network))
   && row.app.includes(filters.app)
   && row.coins.includes(filters.coins);

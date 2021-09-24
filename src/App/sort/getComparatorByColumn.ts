@@ -6,7 +6,6 @@ export default function getComparatorByColumn(sortColumn: keyof Row): Comparator
   switch (sortColumn) {
     case 'app':
     case 'coins':
-    case 'id':
     case 'network':
       return (a, b) => a[sortColumn].localeCompare(b[sortColumn]);
     case 'totalApyFormatted':
