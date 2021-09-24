@@ -11,7 +11,8 @@ import {
   polygonStakePools,
   harmonyPools,
   harmonyStakePools,
-} from '../../beefyPools';
+} from '../../../beefyPools';
+import Network from '../../enums/Network';
 
 const avalancheAll = [avalanchePools, avalancheStakePools].flat();
 const bscAll = [bscPools, bscStakePools].flat();
@@ -20,26 +21,26 @@ const hecoAll = [hecoPools, hecoStakePools].flat();
 const polygonAll = [polygonPools, polygonStakePools].flat();
 const harmonyAll = [harmonyPools, harmonyStakePools].flat();
 
-const getNetwork = (requestedId: string): string => {
+const getNetwork = (requestedId: string): Network => {
   if (avalancheAll.map(({ id }) => id).includes(requestedId)) {
-    return 'AVAX';
+    return Network.AVAX;
   }
   if (bscAll.map(({ id }) => id).includes(requestedId)) {
-    return 'BSC';
+    return Network.BSC;
   }
   if (fantomAll.map(({ id }) => id).includes(requestedId)) {
-    return 'FTM';
+    return Network.FTM;
   }
   if (hecoAll.map(({ id }) => id).includes(requestedId)) {
-    return 'HECO';
+    return Network.HECO;
   }
   if (polygonAll.map(({ id }) => id).includes(requestedId)) {
-    return 'MATIC';
+    return Network.MATIC;
   }
   if (harmonyAll.map(({ id }) => id).includes(requestedId)) {
-    return 'ONE';
+    return Network.ONE;
   }
-  return '';
+  return Network.UNKNOWN;
 };
 
 export default getNetwork;

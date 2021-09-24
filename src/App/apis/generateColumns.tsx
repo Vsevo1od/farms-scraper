@@ -1,16 +1,13 @@
-import uniq from 'lodash/uniq';
+import { uniq } from 'lodash';
 import React from 'react';
+import Network from '../enums/Network';
 import FilterRenderer from '../FilterRenderer/FilterRenderer';
-import formatCoinsAsString from '../rows/formatCoinsAsString';
-import getNetwork from '../rows/getNetwork';
 import { AnyColumn } from '../types/Column';
-import { EntryBody } from '../types/EntryBody';
 import { Filter } from '../types/Filter';
 import { Row } from '../types/Row';
 
 // TODO inline css or use constants
 const FILTER_COLUMN_CLASS_NAME = 'filter-cell';
-export const ALL_NETWORKS = 'All';
 
 function inputStopPropagation(event: React.KeyboardEvent<HTMLElement>) {
   if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
@@ -26,38 +23,14 @@ function inputNumberStopPropagation(event: React.KeyboardEvent<HTMLElement>) {
 
 const selectStopPropagation = inputNumberStopPropagation;
 
-export default async (
-  setRows: (rows: Row[]) => void,
-  setColumns: (columns: AnyColumn[]) => void,
-  setFilters: (filters: Filter) => void,
-) => {
-  const response = await fetch('https://api.beefy.finance/apy/breakdown');
-  const responseJson: Record<string, EntryBody> = await response.json();
-
-  const rows = Object.entries(responseJson)
-    .filter(([,body]) => body.totalApy)
-    .map(([id, { totalApy }]: [string, EntryBody]) => {
-      const [app, coin1, coin2] = id.split('-');
-
-      return {
-        id,
-        totalApy,
-        totalApyFormatted: `${(totalApy * 100).toFixed(2)}%`,
-        network: getNetwork(id),
-        app,
-        coins: formatCoinsAsString(coin1, coin2),
-      };
-    })
-    .filter(({ network }) => network);
-
-  setRows(rows);
-
+export default (rows: Row[], setFilters: (filter: Filter) => void): AnyColumn[] => {
   // TODO filter in real time from sortedFilteredRows
-  const uniqueNetworks = uniq(rows.map(({ network }) => network)).sort();
+
+  const networks = uniq(rows.map(({ network }) => network)).sort();
   const apps = uniq(rows.map(({ app }) => app)).sort();
   const coins = uniq(rows.map((row) => row.coins.split('/')).flat()).sort();
 
-  setColumns([
+  return [
     {
       key: 'totalApyFormatted',
       name: 'Total APY',
@@ -68,8 +41,8 @@ export default async (
         <FilterRenderer<Row, unknown, HTMLInputElement> {...props}>
           {({ filters: theFilters, ...rest }) => (
             <input
-            // TODO
-            // eslint-disable-next-line react/jsx-props-no-spreading
+                    // TODO
+                    // eslint-disable-next-line react/jsx-props-no-spreading
               {...rest}
               value={theFilters.totalApy}
               type="number"
@@ -91,13 +64,13 @@ export default async (
       name: 'Network',
       headerCellClass: FILTER_COLUMN_CLASS_NAME,
       headerRenderer: (props) => (
-      // TODO
-      // eslint-disable-next-line react/jsx-props-no-spreading
+        // TODO
+        // eslint-disable-next-line react/jsx-props-no-spreading
         <FilterRenderer<Row, unknown, HTMLSelectElement> {...props}>
           {({ filters, ...rest }) => (
             <select
-              // TODO
-              // eslint-disable-next-line react/jsx-props-no-spreading
+                    // TODO
+                    // eslint-disable-next-line react/jsx-props-no-spreading
               {...rest}
               value={filters.network}
               onChange={(e) => setFilters({
@@ -106,11 +79,11 @@ export default async (
               })}
               onKeyDown={selectStopPropagation}
             >
-              <option value={ALL_NETWORKS} key={ALL_NETWORKS}>
-                {ALL_NETWORKS}
+              <option value={Network.ALL} key={Network.ALL}>
+                All
               </option>
 
-              {uniqueNetworks.map((network) => (
+              {networks.map((network) => (
                 <option key={network} value={network}>
                   {network}
                 </option>
@@ -133,8 +106,8 @@ export default async (
           {({ filters, ...rest }) => (
             <>
               <input
-                // TODO
-                // eslint-disable-next-line react/jsx-props-no-spreading
+                      // TODO
+                      // eslint-disable-next-line react/jsx-props-no-spreading
                 {...rest}
                 value={filters.app}
                 onChange={(e) => setFilters({
@@ -165,8 +138,8 @@ export default async (
           {({ filters, ...rest }) => (
             <>
               <input
-                // TODO
-                // eslint-disable-next-line react/jsx-props-no-spreading
+                      // TODO
+                      // eslint-disable-next-line react/jsx-props-no-spreading
                 {...rest}
                 value={filters.coins}
                 onChange={(e) => setFilters({
@@ -186,5 +159,5 @@ export default async (
         </FilterRenderer>
       ),
     },
-  ]);
+  ];
 };
