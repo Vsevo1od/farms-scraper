@@ -18,7 +18,9 @@ import { Row } from './types/Row';
 function App() {
   const [rows, setRows] = useState<readonly Row[]>([]);
   const [columns, setColumns] = useState<readonly AnyColumn[]>([]);
-  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([
+    { columnKey: 'totalApyFormatted', direction: 'DESC' },
+  ]);
   const [filters, setFilters] = useState<Filters>({
     totalApy: '',
     enabled: true,
