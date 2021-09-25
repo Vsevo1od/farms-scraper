@@ -7,7 +7,7 @@ import sortedUniq from 'lodash/sortedUniq';
 import React from 'react';
 import { AUTOCOMPLETE_CLASS_NAME, FILTER_COLUMN_CLASS_NAME } from '../constants';
 import FilterRenderer from '../FilterRenderer/FilterRenderer';
-import { AnyColumn } from '../types/Column';
+import { Column } from '../types/Column';
 import { Filters } from '../types/Filters';
 import { Row } from '../types/Row';
 
@@ -33,7 +33,7 @@ export default (
   allRows: readonly Row[],
   rowsToShow: Row[],
   setFilters: (filters: Filters) => void,
-) : AnyColumn[] => {
+) : Column[] => {
   const networks = sortedUniq(
     allRows.map(({ network }) => network).sort(),
   );

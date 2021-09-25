@@ -11,13 +11,13 @@ import fixScrollInsideNumberInputScrollsPage from './filter/fixScrollInsideNumbe
 import { FilterContext } from './FilterRenderer/FilterRenderer';
 import getCompareRowsBySortColumnsFunction from './sort/getCompareRowsBySortColumnsFunction';
 import theme from './theme';
-import { AnyColumn } from './types/Column';
+import { Column } from './types/Column';
 import { Filters } from './types/Filters';
 import { Row } from './types/Row';
 
 function App() {
   const [rows, setRows] = useState<readonly Row[]>([]);
-  const [columns, setColumns] = useState<readonly AnyColumn[]>([]);
+  const [columns, setColumns] = useState<readonly Column[]>([]);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([
     { columnKey: 'totalApyFormatted', direction: 'DESC' },
   ]);
