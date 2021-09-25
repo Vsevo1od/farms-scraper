@@ -6,10 +6,11 @@ import DataGrid, { SortColumn } from 'react-data-grid';
 import generateColumns from './apis/generateColumns';
 import loadData from './apis/loadAllData';
 import './App.scss';
-import { AUTOCOMPLETE_CLASS_NAME, DEFAULT_HEADER_HEIGHT_PX, LINE_HEIGHT_PX } from './constants';
+import { DEFAULT_HEADER_HEIGHT_PX, LINE_HEIGHT_PX } from './constants';
 import MaxApyContext from './contexts/MaxApyContext';
 import fixScrollInsideNumberInputScrollsPage from './filter/fixScrollInsideNumberInputScrollsPage';
 import { FilterContext } from './FilterRenderer/FilterRenderer';
+import calculateRequiredHeaderHeight from './header/calculateRequiredHeaderHeight';
 import getCompareRowsBySortColumnsFunction from './sort/getCompareRowsBySortColumnsFunction';
 import theme from './theme';
 import { Column } from './types/Column';
@@ -61,17 +62,7 @@ function App() {
   };
   useEffect(updateColumns, [rows]);
 
-  const updateHeaderHight = () => {
-    const autocompleteHeights = [...document.querySelectorAll(`.${AUTOCOMPLETE_CLASS_NAME}`)]
-      .map((el) => getComputedStyle(el))
-      .map(({ height }) => parseInt(height, 10));
-    const maxAutocompleteHeight = Math.max(...autocompleteHeights, LINE_HEIGHT_PX);
-    const titleHeight = LINE_HEIGHT_PX;
-    const paddingBottom = 10;
-
-    setHeaderHeightPx(titleHeight + maxAutocompleteHeight + paddingBottom);
-  };
-  useEffect(updateHeaderHight, [filters]);
+  useEffect(() => setHeaderHeightPx(calculateRequiredHeaderHeight()), [filters]);
 
   const maxApy = useMemo(
     () => Math.max(...filteredSortedRows.map(({ totalApy }) => totalApy)),
