@@ -25,8 +25,8 @@ function App() {
     totalApy: '',
     enabled: true,
     networks: [],
-    app: '',
-    coins: '',
+    apps: [],
+    coins: [],
   });
   const [headerHeightPx, setHeaderHeightPx] = useState<number>(DEFAULT_HEADER_HEIGHT_PX);
 
@@ -48,8 +48,8 @@ function App() {
 
   const isRowShowed = (row: Row): boolean => (filters.totalApy || 0) <= row.totalApy
   && (filters.networks.length === 0 || filters.networks.includes(row.network))
-  && row.app.includes(filters.app)
-  && row.coins.includes(filters.coins);
+  && (filters.apps.length === 0 || filters.apps.includes(row.app))
+  && (filters.coins.length === 0 || filters.coins.some((coin) => row.coins.includes(coin)));
 
   const filterRows = () => sortedRows.filter(isRowShowed);
   const filteredSortedRows = useMemo(filterRows, [sortedRows, filters]);

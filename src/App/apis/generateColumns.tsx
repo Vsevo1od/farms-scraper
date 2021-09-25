@@ -1,6 +1,6 @@
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import sortedUniq from 'lodash/sortedUniq';
@@ -10,6 +10,9 @@ import FilterRenderer from '../FilterRenderer/FilterRenderer';
 import { AnyColumn } from '../types/Column';
 import { Filters } from '../types/Filters';
 import { Row } from '../types/Row';
+
+// See https://github.com/mui-org/material-ui/issues/17001
+const SELECT_ITEMS_LIMIT = 30;
 
 function inputStopPropagation(event: React.KeyboardEvent<HTMLElement>) {
   if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
@@ -161,25 +164,37 @@ export default (
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={onAllRowsSelectionChange}
         >
-          {({ filters: theFilters, tabIndex, ref }) => (
-            <>
-              <input
-                tabIndex={tabIndex}
-                ref={ref}
-                value={theFilters.app}
-                onChange={(e) => setFilters({
-                  ...theFilters,
-                  app: e.target.value,
-                })}
-                onKeyDown={inputStopPropagation}
-                list="apps"
-              />
-              <datalist id="apps">
-                {apps.map((app: string) => (
-                  <option value={app} key={app}>{app}</option>
-                ))}
-              </datalist>
-            </>
+          {({ filters: theFilters }) => (
+            <Autocomplete
+              multiple
+              size="small"
+              options={apps}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option}
+              className={AUTOCOMPLETE_CLASS_NAME}
+              value={theFilters.apps}
+              onChange={(event: unknown, newValue: string[]) => setFilters({
+                ...theFilters,
+                apps: newValue,
+              })}
+              renderOption={(props, option, { selected }) => (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <li {...props}>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option}
+                </li>
+              )}
+              renderInput={(params) => (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <TextField {...params} />
+              )}
+              onKeyDown={inputStopPropagation}
+              filterOptions={createFilterOptions({ limit: SELECT_ITEMS_LIMIT })}
+            />
           )}
         </FilterRenderer>
       ),
@@ -206,25 +221,37 @@ export default (
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={onAllRowsSelectionChange}
         >
-          {({ filters: theFilters, tabIndex, ref }) => (
-            <>
-              <input
-                tabIndex={tabIndex}
-                ref={ref}
-                value={theFilters.coins}
-                onChange={(e) => setFilters({
-                  ...theFilters,
-                  coins: e.target.value,
-                })}
-                onKeyDown={inputStopPropagation}
-                list="coins"
-              />
-              <datalist id="coins">
-                {coins.map((coin: string) => (
-                  <option value={coin} key={coin}>{coin}</option>
-                ))}
-              </datalist>
-            </>
+          {({ filters: theFilters }) => (
+            <Autocomplete
+              multiple
+              size="small"
+              options={coins}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option}
+              className={AUTOCOMPLETE_CLASS_NAME}
+              value={theFilters.coins}
+              onChange={(event: unknown, newValue: string[]) => setFilters({
+                ...theFilters,
+                coins: newValue,
+              })}
+              renderOption={(props, option, { selected }) => (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <li {...props}>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option}
+                </li>
+              )}
+              renderInput={(params) => (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <TextField {...params} />
+              )}
+              onKeyDown={inputStopPropagation}
+              filterOptions={createFilterOptions({ limit: SELECT_ITEMS_LIMIT })}
+            />
           )}
         </FilterRenderer>
       ),
