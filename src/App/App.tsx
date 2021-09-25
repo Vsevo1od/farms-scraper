@@ -5,7 +5,7 @@ import DataGrid, { SortColumn } from 'react-data-grid';
 import generateColumns from './apis/generateColumns';
 import loadData from './apis/loadAllData';
 import './App.scss';
-import Network from './enums/Network';
+import { AUTOCOMPLETE_CLASS_NAME, DEFAULT_HEADER_HEIGHT_PX, LINE_HEIGHT_PX } from './constants';
 import fixScrollInsideNumberInputScrollsPage from './filter/fixScrollInsideNumberInputScrollsPage';
 import { FilterContext } from './FilterRenderer/FilterRenderer';
 import getCompareRowsBySortColumnsFunction from './sort/getCompareRowsBySortColumnsFunction';
@@ -20,10 +20,11 @@ function App() {
   const [filters, setFilters] = useState<Filters>({
     totalApy: '',
     enabled: true,
-    network: Network.ALL,
+    networks: [],
     app: '',
     coins: '',
   });
+  const [headerHeightPx, setHeaderHeightPx] = useState<number>(DEFAULT_HEADER_HEIGHT_PX);
 
   useEffect((): void => {
     loadData().then(setRows);
@@ -42,7 +43,7 @@ function App() {
   const sortedRows = useMemo(sortRows, [rows, sortColumns]);
 
   const isRowShowed = (row: Row): boolean => (filters.totalApy || 0) <= row.totalApy
-  && (filters.network === Network.ALL ? true : row.network.includes(filters.network))
+  && (filters.networks.length === 0 || filters.networks.includes(row.network))
   && row.app.includes(filters.app)
   && row.coins.includes(filters.coins);
 
@@ -50,10 +51,22 @@ function App() {
   const filteredSortedRows = useMemo(filterRows, [sortedRows, filters]);
 
   const updateColumns = () => {
-    const updatedColumns = generateColumns(filteredSortedRows, filters, setFilters);
+    const updatedColumns = generateColumns(rows, filteredSortedRows, setFilters);
     setColumns(updatedColumns);
   };
-  useMemo(updateColumns, [filteredSortedRows]);
+  useEffect(updateColumns, [rows]);
+
+  const updateHeaderHight = () => {
+    const autocompleteHeights = [...document.querySelectorAll(`.${AUTOCOMPLETE_CLASS_NAME}`)]
+      .map((el) => getComputedStyle(el))
+      .map(({ height }) => parseInt(height, 10));
+    const maxAutocompleteHeight = Math.max(...autocompleteHeights, LINE_HEIGHT_PX);
+    const titleHeight = LINE_HEIGHT_PX;
+    const paddingBottom = 10;
+
+    setHeaderHeightPx(titleHeight + maxAutocompleteHeight + paddingBottom);
+  };
+  useEffect(updateHeaderHight, [filters]);
 
   return (
     <div className="app">
@@ -63,7 +76,7 @@ function App() {
           columns={columns}
           style={{
             height: '100%',
-            lineHeight: '35px',
+            lineHeight: `${LINE_HEIGHT_PX}px`,
           }}
           defaultColumnOptions={{
             sortable: true,
@@ -71,7 +84,7 @@ function App() {
           }}
           sortColumns={sortColumns}
           onSortColumnsChange={setSortColumns}
-          headerRowHeight={filters.enabled ? 70 : undefined}
+          headerRowHeight={headerHeightPx}
         />
       </FilterContext.Provider>
     </div>

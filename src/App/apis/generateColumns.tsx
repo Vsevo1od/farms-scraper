@@ -1,11 +1,23 @@
-import React from 'react';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import { createTheme, ThemeProvider } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
 import sortedUniq from 'lodash/sortedUniq';
-import Network from '../enums/Network';
+import React from 'react';
+import { AUTOCOMPLETE_CLASS_NAME, FILTER_COLUMN_CLASS_NAME } from '../constants';
 import FilterRenderer from '../FilterRenderer/FilterRenderer';
 import { AnyColumn } from '../types/Column';
 import { Filters } from '../types/Filters';
 import { Row } from '../types/Row';
-import { FILTER_COLUMN_CLASS_NAME } from '../constants';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+const lightTheme = createTheme();
 
 function inputStopPropagation(event: React.KeyboardEvent<HTMLElement>) {
   if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
@@ -19,25 +31,22 @@ function inputNumberStopPropagation(event: React.KeyboardEvent<HTMLElement>) {
   }
 }
 
-const selectStopPropagation = inputNumberStopPropagation;
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const getNetworksToShow = (rows: Row[], selectedNetwork: string): string[] => {
-  const networksToShowWithDuplicates = rows.map(({ network }) => network);
-  if (selectedNetwork && selectedNetwork !== Network.ALL) {
-    networksToShowWithDuplicates.push(selectedNetwork);
-  }
-
-  return sortedUniq(networksToShowWithDuplicates.sort());
-};
-
-export default (rows: Row[], filters: Filters, setFilters: (filters: Filters) => void)
-: AnyColumn[] => {
-  const networks = getNetworksToShow(rows, filters.network);
+export default (
+  allRows: readonly Row[],
+  rowsToShow: Row[],
+  setFilters: (filters: Filters) => void,
+) : AnyColumn[] => {
+  const networks = sortedUniq(
+    allRows.map(({ network }) => network).sort(),
+  );
   const apps = sortedUniq(
-    rows.map(({ app }) => app).sort(),
+    rowsToShow.map(({ app }) => app).sort(),
   );
   const coins = sortedUniq(
-    rows.map((row) => row.coins.split('/')).flat().sort(),
+    rowsToShow.map((row) => row.coins.split('/')).flat().sort(),
   );
 
   return [
@@ -104,29 +113,37 @@ export default (rows: Row[], filters: Filters, setFilters: (filters: Filters) =>
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={onAllRowsSelectionChange}
         >
-          {({ filters: theFilters, tabIndex, ref }) => (
-            <select
-              tabIndex={tabIndex}
-              ref={ref}
-              value={theFilters.network}
-              onChange={(e) => setFilters({
-                ...theFilters,
-                network: e.target.value,
-              })}
-              onKeyDown={selectStopPropagation}
-            >
-              <option value={Network.ALL} key={Network.ALL}>
-                All
-              </option>
-
-              {networks.map((network) => (
-                <option key={network} value={network}>
-                  {network}
-                </option>
-              ))}
-
-            </select>
-
+          {({ filters: theFilters }) => (
+            <ThemeProvider theme={window.matchMedia('(prefers-color-scheme: dark)').matches ? darkTheme : lightTheme}>
+              <Autocomplete
+                multiple
+                size="small"
+                options={networks}
+                disableCloseOnSelect
+                getOptionLabel={(option) => option}
+                className={AUTOCOMPLETE_CLASS_NAME}
+                value={theFilters.networks}
+                onChange={(event: unknown, newValue: string[]) => setFilters({
+                  ...theFilters,
+                  networks: newValue,
+                })}
+                renderOption={(props, option, { selected }) => (
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      checked={selected}
+                    />
+                    {option}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  <TextField {...params} />
+                )}
+              />
+            </ThemeProvider>
           )}
         </FilterRenderer>
       ),
