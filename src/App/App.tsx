@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@mui/material';
 import React, {
   useEffect, useMemo, useState,
 } from 'react';
@@ -9,6 +10,7 @@ import { AUTOCOMPLETE_CLASS_NAME, DEFAULT_HEADER_HEIGHT_PX, LINE_HEIGHT_PX } fro
 import fixScrollInsideNumberInputScrollsPage from './filter/fixScrollInsideNumberInputScrollsPage';
 import { FilterContext } from './FilterRenderer/FilterRenderer';
 import getCompareRowsBySortColumnsFunction from './sort/getCompareRowsBySortColumnsFunction';
+import theme from './theme';
 import { AnyColumn } from './types/Column';
 import { Filters } from './types/Filters';
 import { Row } from './types/Row';
@@ -70,23 +72,25 @@ function App() {
 
   return (
     <div className="app">
-      <FilterContext.Provider value={filters}>
-        <DataGrid
-          rows={filteredSortedRows}
-          columns={columns}
-          style={{
-            height: '100%',
-            lineHeight: `${LINE_HEIGHT_PX}px`,
-          }}
-          defaultColumnOptions={{
-            sortable: true,
-            resizable: true,
-          }}
-          sortColumns={sortColumns}
-          onSortColumnsChange={setSortColumns}
-          headerRowHeight={headerHeightPx}
-        />
-      </FilterContext.Provider>
+      <ThemeProvider theme={theme}>
+        <FilterContext.Provider value={filters}>
+          <DataGrid
+            rows={filteredSortedRows}
+            columns={columns}
+            style={{
+              height: '100%',
+              lineHeight: `${LINE_HEIGHT_PX}px`,
+            }}
+            defaultColumnOptions={{
+              sortable: true,
+              resizable: true,
+            }}
+            sortColumns={sortColumns}
+            onSortColumnsChange={setSortColumns}
+            headerRowHeight={headerHeightPx}
+          />
+        </FilterContext.Provider>
+      </ThemeProvider>
     </div>
   );
 }

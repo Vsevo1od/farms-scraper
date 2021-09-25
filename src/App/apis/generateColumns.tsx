@@ -1,6 +1,5 @@
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import { createTheme, ThemeProvider } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
@@ -11,13 +10,6 @@ import FilterRenderer from '../FilterRenderer/FilterRenderer';
 import { AnyColumn } from '../types/Column';
 import { Filters } from '../types/Filters';
 import { Row } from '../types/Row';
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
-const lightTheme = createTheme();
 
 function inputStopPropagation(event: React.KeyboardEvent<HTMLElement>) {
   if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
@@ -73,18 +65,19 @@ export default (
           onAllRowsSelectionChange={onAllRowsSelectionChange}
         >
           {({ filters: theFilters, tabIndex, ref }) => (
-            <input
+            <TextField
               tabIndex={tabIndex}
               ref={ref}
-              value={theFilters.totalApy}
               type="number"
-              min="0"
-              onChange={(e) => setFilters({
-                ...theFilters,
-                totalApy: Number.isFinite(e.target.valueAsNumber)
-                  ? e.target.valueAsNumber
-                  : 0,
-              })}
+              size="small"
+              InputProps={{ inputProps: { min: 0 } }}
+              value={theFilters.totalApy}
+              onChange={({ target: { valueAsNumber } }: React.ChangeEvent<HTMLInputElement>) => {
+                setFilters({
+                  ...theFilters,
+                  totalApy: Number.isFinite(valueAsNumber) ? valueAsNumber : 0,
+                });
+              }}
               onKeyDown={inputNumberStopPropagation}
             />
           )}
@@ -114,36 +107,34 @@ export default (
           onAllRowsSelectionChange={onAllRowsSelectionChange}
         >
           {({ filters: theFilters }) => (
-            <ThemeProvider theme={window.matchMedia('(prefers-color-scheme: dark)').matches ? darkTheme : lightTheme}>
-              <Autocomplete
-                multiple
-                size="small"
-                options={networks}
-                disableCloseOnSelect
-                getOptionLabel={(option) => option}
-                className={AUTOCOMPLETE_CLASS_NAME}
-                value={theFilters.networks}
-                onChange={(event: unknown, newValue: string[]) => setFilters({
-                  ...theFilters,
-                  networks: newValue,
-                })}
-                renderOption={(props, option, { selected }) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <li {...props}>
-                    <Checkbox
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      checked={selected}
-                    />
-                    {option}
-                  </li>
-                )}
-                renderInput={(params) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <TextField {...params} />
-                )}
-              />
-            </ThemeProvider>
+            <Autocomplete
+              multiple
+              size="small"
+              options={networks}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option}
+              className={AUTOCOMPLETE_CLASS_NAME}
+              value={theFilters.networks}
+              onChange={(event: unknown, newValue: string[]) => setFilters({
+                ...theFilters,
+                networks: newValue,
+              })}
+              renderOption={(props, option, { selected }) => (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <li {...props}>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option}
+                </li>
+              )}
+              renderInput={(params) => (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <TextField {...params} />
+              )}
+            />
           )}
         </FilterRenderer>
       ),
