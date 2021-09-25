@@ -44,6 +44,8 @@ export default (
     rowsToShow.map((row) => row.coins.split('/')).flat().sort(),
   );
 
+  const maxApy = Math.max(...rowsToShow.map(({ totalApy }) => totalApy));
+
   return [
     {
       key: 'totalApyFormatted',
@@ -86,6 +88,13 @@ export default (
           )}
         </FilterRenderer>
       ),
+      cellClass(row: Row) {
+        const fractionOfMaxApy = row.totalApy / maxApy;
+        const percentOfMaxApy = Math.floor(fractionOfMaxApy * 100);
+        const percentOfMaxApyFlooredToNearest5 = Math.floor(percentOfMaxApy / 5) * 5;
+
+        return `anti-gradient-${percentOfMaxApyFlooredToNearest5}`;
+      },
     },
     {
       key: 'network',
@@ -123,7 +132,7 @@ export default (
                 networks: newValue,
               })}
               renderOption={(props, option, { selected }) => (
-                // eslint-disable-next-line react/jsx-props-no-spreading
+              // eslint-disable-next-line react/jsx-props-no-spreading
                 <li {...props}>
                   <Checkbox
                     icon={icon}
@@ -134,7 +143,7 @@ export default (
                 </li>
               )}
               renderInput={(params) => (
-                // eslint-disable-next-line react/jsx-props-no-spreading
+              // eslint-disable-next-line react/jsx-props-no-spreading
                 <TextField {...params} />
               )}
             />
@@ -178,7 +187,7 @@ export default (
                 apps: newValue,
               })}
               renderOption={(props, option, { selected }) => (
-                // eslint-disable-next-line react/jsx-props-no-spreading
+              // eslint-disable-next-line react/jsx-props-no-spreading
                 <li {...props}>
                   <Checkbox
                     icon={icon}
@@ -189,7 +198,7 @@ export default (
                 </li>
               )}
               renderInput={(params) => (
-                // eslint-disable-next-line react/jsx-props-no-spreading
+              // eslint-disable-next-line react/jsx-props-no-spreading
                 <TextField {...params} />
               )}
               onKeyDown={inputStopPropagation}
@@ -235,7 +244,7 @@ export default (
                 coins: newValue,
               })}
               renderOption={(props, option, { selected }) => (
-                // eslint-disable-next-line react/jsx-props-no-spreading
+              // eslint-disable-next-line react/jsx-props-no-spreading
                 <li {...props}>
                   <Checkbox
                     icon={icon}
@@ -246,7 +255,7 @@ export default (
                 </li>
               )}
               renderInput={(params) => (
-                // eslint-disable-next-line react/jsx-props-no-spreading
+              // eslint-disable-next-line react/jsx-props-no-spreading
                 <TextField {...params} />
               )}
               onKeyDown={inputStopPropagation}
