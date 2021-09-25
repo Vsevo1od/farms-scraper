@@ -4,8 +4,9 @@ import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import sortedUniq from 'lodash/sortedUniq';
-import React from 'react';
+import React, { useContext } from 'react';
 import { AUTOCOMPLETE_CLASS_NAME, FILTER_COLUMN_CLASS_NAME } from '../constants';
+import MaxApyContext from '../contexts/MaxApyContext';
 import FilterRenderer from '../FilterRenderer/FilterRenderer';
 import { Column } from '../types/Column';
 import { Filters } from '../types/Filters';
@@ -43,8 +44,6 @@ export default (
   const coins = sortedUniq(
     rowsToShow.map((row) => row.coins.split('/')).flat().sort(),
   );
-
-  const maxApy = Math.max(...rowsToShow.map(({ totalApy }) => totalApy));
 
   return [
     {
@@ -89,6 +88,7 @@ export default (
         </FilterRenderer>
       ),
       cellClass(row: Row) {
+        const maxApy = useContext(MaxApyContext);
         const fractionOfMaxApy = row.totalApy / maxApy;
         const percentOfMaxApy = Math.floor(fractionOfMaxApy * 100);
         const percentOfMaxApyFlooredToNearest5 = Math.floor(percentOfMaxApy / 5) * 5;

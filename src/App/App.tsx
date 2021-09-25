@@ -7,6 +7,7 @@ import generateColumns from './apis/generateColumns';
 import loadData from './apis/loadAllData';
 import './App.scss';
 import { AUTOCOMPLETE_CLASS_NAME, DEFAULT_HEADER_HEIGHT_PX, LINE_HEIGHT_PX } from './constants';
+import MaxApyContext from './contexts/MaxApyContext';
 import fixScrollInsideNumberInputScrollsPage from './filter/fixScrollInsideNumberInputScrollsPage';
 import { FilterContext } from './FilterRenderer/FilterRenderer';
 import getCompareRowsBySortColumnsFunction from './sort/getCompareRowsBySortColumnsFunction';
@@ -72,25 +73,32 @@ function App() {
   };
   useEffect(updateHeaderHight, [filters]);
 
+  const maxApy = useMemo(
+    () => Math.max(...filteredSortedRows.map(({ totalApy }) => totalApy)),
+    [filteredSortedRows],
+  );
+
   return (
     <div className="app">
       <ThemeProvider theme={theme}>
         <FilterContext.Provider value={filters}>
-          <DataGrid
-            rows={filteredSortedRows}
-            columns={columns}
-            style={{
-              height: '100%',
-              lineHeight: `${LINE_HEIGHT_PX}px`,
-            }}
-            defaultColumnOptions={{
-              sortable: true,
-              resizable: true,
-            }}
-            sortColumns={sortColumns}
-            onSortColumnsChange={setSortColumns}
-            headerRowHeight={headerHeightPx}
-          />
+          <MaxApyContext.Provider value={maxApy}>
+            <DataGrid
+              rows={filteredSortedRows}
+              columns={columns}
+              style={{
+                height: '100%',
+                lineHeight: `${LINE_HEIGHT_PX}px`,
+              }}
+              defaultColumnOptions={{
+                sortable: true,
+                resizable: true,
+              }}
+              sortColumns={sortColumns}
+              onSortColumnsChange={setSortColumns}
+              headerRowHeight={headerHeightPx}
+            />
+          </MaxApyContext.Provider>
         </FilterContext.Provider>
       </ThemeProvider>
     </div>
