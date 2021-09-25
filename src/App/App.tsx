@@ -11,11 +11,19 @@ import MaxApyContext from './contexts/MaxApyContext';
 import fixScrollInsideNumberInputScrollsPage from './filter/fixScrollInsideNumberInputScrollsPage';
 import { FilterContext } from './FilterRenderer/FilterRenderer';
 import calculateRequiredHeaderHeight from './header/calculateRequiredHeaderHeight';
-import getCompareRowsBySortColumnsFunction from './sort/getCompareRowsBySortColumnsFunction';
+import getRowsToShow from './rows/getRowsToShow';
 import theme from './theme';
 import { Column } from './types/Column';
 import { Filters } from './types/Filters';
 import { Row } from './types/Row';
+
+const defaultFilters: Filters = {
+  totalApy: '',
+  enabled: true,
+  networks: [],
+  apps: [],
+  coins: [],
+};
 
 function App() {
   const [rows, setRows] = useState<readonly Row[]>([]);
@@ -23,13 +31,7 @@ function App() {
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([
     { columnKey: 'totalApyFormatted', direction: 'DESC' },
   ]);
-  const [filters, setFilters] = useState<Filters>({
-    totalApy: '',
-    enabled: true,
-    networks: [],
-    apps: [],
-    coins: [],
-  });
+  const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [headerHeightPx, setHeaderHeightPx] = useState<number>(DEFAULT_HEADER_HEIGHT_PX);
 
   useEffect((): void => {
@@ -38,26 +40,10 @@ function App() {
 
   fixScrollInsideNumberInputScrollsPage();
 
-  const sortRows = (): readonly Row[] => {
-    if (sortColumns.length === 0) {
-      return rows;
-    }
-
-    return [...rows].sort(getCompareRowsBySortColumnsFunction(sortColumns));
-  };
-
-  const sortedRows = useMemo(sortRows, [rows, sortColumns]);
-
-  const isRowShowed = (row: Row): boolean => (filters.totalApy || 0) <= row.totalApy
-  && (filters.networks.length === 0 || filters.networks.includes(row.network))
-  && (filters.apps.length === 0 || filters.apps.includes(row.app))
-  && (filters.coins.length === 0 || filters.coins.some((coin) => row.coins.includes(coin)));
-
-  const filterRows = () => sortedRows.filter(isRowShowed);
-  const filteredSortedRows = useMemo(filterRows, [sortedRows, filters]);
+  const rowsToShow = getRowsToShow(rows, sortColumns, filters);
 
   const updateColumns = () => {
-    const updatedColumns = generateColumns(rows, filteredSortedRows, setFilters);
+    const updatedColumns = generateColumns(rows, rowsToShow, setFilters);
     setColumns(updatedColumns);
   };
   useEffect(updateColumns, [rows]);
@@ -65,8 +51,8 @@ function App() {
   useEffect(() => setHeaderHeightPx(calculateRequiredHeaderHeight()), [filters]);
 
   const maxApy = useMemo(
-    () => Math.max(...filteredSortedRows.map(({ totalApy }) => totalApy)),
-    [filteredSortedRows],
+    () => Math.max(...rowsToShow.map(({ totalApy }) => totalApy)),
+    [rowsToShow],
   );
 
   return (
@@ -75,7 +61,7 @@ function App() {
         <FilterContext.Provider value={filters}>
           <MaxApyContext.Provider value={maxApy}>
             <DataGrid
-              rows={filteredSortedRows}
+              rows={rowsToShow}
               columns={columns}
               style={{
                 height: '100%',
