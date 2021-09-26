@@ -1,4 +1,4 @@
-function formatCoinsAsString(coin1: string, coin2?: string) {
+function formatCoinsAsString(coin1: string, coin2?: string): string {
   if (!coin2) {
     return coin1;
   }

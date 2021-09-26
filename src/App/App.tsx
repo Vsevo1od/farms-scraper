@@ -23,6 +23,7 @@ const defaultFilters: Filters = {
   networks: [],
   apps: [],
   coins: [],
+  types: [],
 };
 
 function App() {
@@ -43,7 +44,7 @@ function App() {
   const rowsToShow = getRowsToShow(rows, sortColumns, filters);
 
   const updateColumns = () => {
-    const updatedColumns = generateColumns(rows, rowsToShow, setFilters);
+    const updatedColumns = generateColumns(rows, setFilters);
     setColumns(updatedColumns);
   };
   useEffect(updateColumns, [rows]);

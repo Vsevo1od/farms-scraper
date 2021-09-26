@@ -4,4 +4,5 @@ export interface Filters {
   networks: string[];
   apps: string[];
   coins: string[];
+  types: string[];
 }

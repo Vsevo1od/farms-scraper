@@ -32,17 +32,27 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default (
   allRows: readonly Row[],
-  rowsToShow: Row[],
   setFilters: (filters: Filters) => void,
 ) : Column[] => {
   const networks = sortedUniq(
     allRows.map(({ network }) => network).sort(),
   );
   const apps = sortedUniq(
-    rowsToShow.map(({ app }) => app).sort(),
+    allRows.map(({ app }) => app).sort(),
   );
   const coins = sortedUniq(
-    rowsToShow.map((row) => row.coins.split('/')).flat().sort(),
+    allRows
+      .map(({ coin1, coin2 }) => (coin2 ? [coin1, coin2] : [coin1]))
+      .flat()
+      .sort(),
+  );
+
+  const types = sortedUniq(
+    allRows
+      .map((row) => row.types)
+      .flat()
+      .filter((x) => x)
+      .sort(),
   );
 
   return [
@@ -209,7 +219,7 @@ export default (
       ),
     },
     {
-      key: 'coins',
+      key: 'coinsFormatted',
       name: 'Coins',
       headerCellClass: FILTER_COLUMN_CLASS_NAME,
       headerRenderer: ({
@@ -242,6 +252,63 @@ export default (
               onChange={(event: unknown, newValue: string[]) => setFilters({
                 ...theFilters,
                 coins: newValue,
+              })}
+              renderOption={(props, option, { selected }) => (
+              // eslint-disable-next-line react/jsx-props-no-spreading
+                <li {...props}>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option}
+                </li>
+              )}
+              renderInput={(params) => (
+              // eslint-disable-next-line react/jsx-props-no-spreading
+                <TextField {...params} />
+              )}
+              onKeyDown={inputStopPropagation}
+              filterOptions={createFilterOptions({ limit: SELECT_ITEMS_LIMIT })}
+            />
+          )}
+        </FilterRenderer>
+      ),
+    },
+    {
+      key: 'types',
+      name: 'Types',
+      headerCellClass: FILTER_COLUMN_CLASS_NAME,
+      headerRenderer: ({
+        isCellSelected,
+        column,
+        onSort,
+        sortDirection,
+        priority,
+        allRowsSelected,
+        onAllRowsSelectionChange,
+      }) => (
+        <FilterRenderer<Row, unknown, HTMLInputElement>
+          isCellSelected={isCellSelected}
+          column={column}
+          onSort={onSort}
+          sortDirection={sortDirection}
+          priority={priority}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        >
+          {({ filters: theFilters }) => (
+            <Autocomplete
+              multiple
+              size="small"
+              options={types}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option}
+              className={AUTOCOMPLETE_CLASS_NAME}
+              value={theFilters.types}
+              onChange={(event: unknown, newValue: string[]) => setFilters({
+                ...theFilters,
+                types: newValue,
               })}
               renderOption={(props, option, { selected }) => (
               // eslint-disable-next-line react/jsx-props-no-spreading
