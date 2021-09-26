@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/farms-scraper/static/css/main.d4467af2.chunk.css",
-    "main.js": "/farms-scraper/static/js/main.0399edb7.chunk.js",
-    "main.js.map": "/farms-scraper/static/js/main.0399edb7.chunk.js.map",
+    "main.css": "/farms-scraper/static/css/main.3cb27f7f.chunk.css",
+    "main.js": "/farms-scraper/static/js/main.e5d15acb.chunk.js",
+    "main.js.map": "/farms-scraper/static/js/main.e5d15acb.chunk.js.map",
     "runtime-main.js": "/farms-scraper/static/js/runtime-main.9e283ba9.js",
     "runtime-main.js.map": "/farms-scraper/static/js/runtime-main.9e283ba9.js.map",
     "static/css/2.2d4642f2.chunk.css": "/farms-scraper/static/css/2.2d4642f2.chunk.css",
-    "static/js/2.be4ff11e.chunk.js": "/farms-scraper/static/js/2.be4ff11e.chunk.js",
-    "static/js/2.be4ff11e.chunk.js.map": "/farms-scraper/static/js/2.be4ff11e.chunk.js.map",
+    "static/js/2.e37b6214.chunk.js": "/farms-scraper/static/js/2.e37b6214.chunk.js",
+    "static/js/2.e37b6214.chunk.js.map": "/farms-scraper/static/js/2.e37b6214.chunk.js.map",
     "static/js/3.4392aed4.chunk.js": "/farms-scraper/static/js/3.4392aed4.chunk.js",
     "static/js/3.4392aed4.chunk.js.map": "/farms-scraper/static/js/3.4392aed4.chunk.js.map",
     "index.html": "/farms-scraper/index.html",
     "static/css/2.2d4642f2.chunk.css.map": "/farms-scraper/static/css/2.2d4642f2.chunk.css.map",
-    "static/css/main.d4467af2.chunk.css.map": "/farms-scraper/static/css/main.d4467af2.chunk.css.map",
-    "static/js/2.be4ff11e.chunk.js.LICENSE.txt": "/farms-scraper/static/js/2.be4ff11e.chunk.js.LICENSE.txt",
+    "static/css/main.3cb27f7f.chunk.css.map": "/farms-scraper/static/css/main.3cb27f7f.chunk.css.map",
+    "static/js/2.e37b6214.chunk.js.LICENSE.txt": "/farms-scraper/static/js/2.e37b6214.chunk.js.LICENSE.txt",
     "static/media/300.css": "/farms-scraper/static/media/roboto-vietnamese-300-normal.af9afdc1.woff2",
     "static/media/400.css": "/farms-scraper/static/media/roboto-vietnamese-400-normal.c0bec65d.woff2",
     "static/media/500.css": "/farms-scraper/static/media/roboto-vietnamese-500-normal.b8e494da.woff2",
@@ -22,8 +22,8 @@
   "entrypoints": [
     "static/js/runtime-main.9e283ba9.js",
     "static/css/2.2d4642f2.chunk.css",
-    "static/js/2.be4ff11e.chunk.js",
-    "static/css/main.d4467af2.chunk.css",
-    "static/js/main.0399edb7.chunk.js"
+    "static/js/2.e37b6214.chunk.js",
+    "static/css/main.3cb27f7f.chunk.css",
+    "static/js/main.e5d15acb.chunk.js"
   ]
 }
