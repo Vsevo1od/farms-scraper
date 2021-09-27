@@ -1,0 +1,20 @@
+name: Deployment
+on:
+  push:
+    branches: [master]
+jobs:
+  first:
+    name: Main and only deploy job
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploying on server from secret variables
+      uses: appleboy/ssh-action@master
+      with: 
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: ${{ secrets.DEPLOY_USERNAME }}
+        key: ${{ secrets.DEPLOY_SECRET_SSH_KEY }}
+        script: |
+          cd farms-scraper
+          git fetch
+          git reset --hard origin/master
+          docker-compose -f docker/docker-compose.yml up -d --build
