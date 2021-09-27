@@ -6,4 +6,5 @@ export type RawRow = {
   // coins should be lower cased for type checks
   coin1: string,
   coin2?: string,
+  restCoins?: string[],
 };

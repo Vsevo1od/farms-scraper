@@ -1,5 +1,4 @@
 {
-  "homepage": "http://vsevo1od.github.io/farms-scraper",
   "name": "farms-scraper",
   "version": "0.1.0",
   "private": true,
@@ -19,6 +18,7 @@
     "@types/react": "^17.0.21",
     "@types/react-dom": "^17.0.9",
     "blockchain-addressbook": "^0.3.16",
+    "dotenv": "^10.0.0",
     "lodash": "^4.17.21",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",
@@ -34,7 +34,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
+    "predeploy": "PUBLIC_URL=./farms-scraper npm run build",
     "deploy": "gh-pages -d build"
   },
   "browserslist": {
