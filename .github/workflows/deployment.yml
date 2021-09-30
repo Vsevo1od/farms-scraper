@@ -17,4 +17,4 @@ jobs:
           cd farms-scraper
           git fetch
           git reset --hard origin/master
-          docker-compose -f docker/docker-compose.yml up -d --build
+          docker-compose -f docker/docker-compose.yml --env-file .env.local up -d --build

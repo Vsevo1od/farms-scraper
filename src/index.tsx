@@ -5,10 +5,11 @@ import '@fontsource/roboto/700.css';
 import * as dotenv from 'dotenv';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import dotenvExpand from 'dotenv-expand';
 import App from './App/App';
 import reportWebVitals from './reportWebVitals';
 
-dotenv.config();
+dotenvExpand(dotenv.config());
 
 ReactDOM.render(
   <React.StrictMode>

@@ -7,6 +7,6 @@ npm run start
 
 ```bash
 cp .env .env.local
-# update REACT_APP_FARM_ARMY_PROXY_URL to your host
+# update all variables in .env.local
 docker-compose -f docker/docker-compose.yml up -d --build
 ```

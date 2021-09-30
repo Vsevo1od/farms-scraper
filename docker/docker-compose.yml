@@ -1,13 +1,23 @@
 version: "3.7"
 services:
+  main-proxy:
+    build: ./mainProxy
+    command: /bin/bash -c "envsubst < /etc/nginx/nginx.template.conf > /etc/nginx/nginx.conf && nginx -g 'daemon off;'" 
+    environment:
+      WEB_SERVER_NAME: ${WEB_SERVER_NAME}
+      WEB_EXTERNAL_PORT: ${WEB_EXTERNAL_PORT}
+      WEB_CONTAINER_NAME: ${WEB_CONTAINER_NAME}
+      FARM_ARMY_PROXY_SERVER_NAME: ${FARM_ARMY_PROXY_SERVER_NAME}
+      FARM_ARMY_PROXY_EXTERNAL_PORT: ${FARM_ARMY_PROXY_EXTERNAL_PORT}
+      FARM_ARMY_PROXY_CONTAINER_NAME: ${FARM_ARMY_PROXY_CONTAINER_NAME}
+    ports: 
+      - "${WEB_EXTERNAL_PORT}:${WEB_EXTERNAL_PORT}"
+      - "${FARM_ARMY_PROXY_EXTERNAL_PORT}:${FARM_ARMY_PROXY_EXTERNAL_PORT}"
   web:
     build: 
       context: ../
       dockerfile: docker/web/Dockerfile
-    ports:
-      - "8081:80"
+    container_name: ${WEB_CONTAINER_NAME}
   farm-army-proxy:
     build: ./farmArmyProxy
-    ports:
-      - "8082:80"
-    
+    container_name: ${FARM_ARMY_PROXY_CONTAINER_NAME}
