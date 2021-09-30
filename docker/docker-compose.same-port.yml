@@ -1,0 +1,5 @@
+version: "3.7"
+services:
+  main-proxy:
+    ports: 
+      - "${WEB_EXTERNAL_PORT}:${WEB_EXTERNAL_PORT}"
