@@ -31,7 +31,7 @@ function App() {
   const [rows, setRows] = useState<readonly Row[]>([]);
   const [columns, setColumns] = useState<readonly Column[]>([]);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([
-    { columnKey: 'totalApyFormatted', direction: 'DESC' },
+    { columnKey: 'totalApy', direction: 'DESC' },
   ]);
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [headerHeightPx, setHeaderHeightPx] = useState<number>(DEFAULT_HEADER_HEIGHT_PX);

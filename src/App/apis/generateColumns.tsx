@@ -62,10 +62,13 @@ export default (
     maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
   });
 
+  const compactNumberFormatter = new Intl.NumberFormat('en', { notation: 'compact' });
+  const scientificNumberFormatter = new Intl.NumberFormat('en', { notation: 'scientific' });
+
   return [
     {
-      key: 'totalApyFormatted',
-      name: 'Total APY',
+      key: 'totalApy',
+      name: 'APY',
       headerCellClass: FILTER_COLUMN_CLASS_NAME,
       headerRenderer: ({
         isCellSelected,
@@ -111,6 +114,12 @@ export default (
         const percentOfMaxApyFlooredToNearest5 = Math.floor(percentOfMaxApy / 5) * 5;
 
         return `anti-gradient-${percentOfMaxApyFlooredToNearest5}`;
+      },
+      formatter({ row }) {
+        const formattedApy = row.totalApy < 1e15
+          ? compactNumberFormatter.format(row.totalApy)
+          : scientificNumberFormatter.format(row.totalApy);
+        return (<span>{ `${formattedApy}%` }</span>);
       },
     },
     {

@@ -8,7 +8,7 @@ export default function getComparatorByColumn(sortColumn: keyof Row): Comparator
     case 'coinsFormatted':
     case 'network':
       return (a, b) => a[sortColumn].localeCompare(b[sortColumn]);
-    case 'totalApyFormatted':
+    case 'totalApy':
       return (a, b) => a.totalApy - b.totalApy;
     case 'tvl':
       return (a, b) => (a.tvl || 0) - (b.tvl || 0);

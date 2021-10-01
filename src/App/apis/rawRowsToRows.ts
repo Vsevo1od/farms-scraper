@@ -7,7 +7,6 @@ export default (rawRows: RawRow[]): Row[] => rawRows.map((rawRow)
 : Row => ({
   id: `beefy_${rawRow.idUniqueToAPI}`,
   totalApy: rawRow.totalApyPercents,
-  totalApyFormatted: `${(rawRow.totalApyPercents).toFixed(2)}%`,
   network: rawRow.network,
   app: rawRow.app,
   coin1: rawRow.coin1,

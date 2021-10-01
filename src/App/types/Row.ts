@@ -1,6 +1,5 @@
 export interface Row {
   id: string,
-  totalApyFormatted: string,
   totalApy: number,
   network: string,
   app: string,

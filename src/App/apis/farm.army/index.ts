@@ -1,4 +1,4 @@
-import {RawRow} from '../../types/RawRow';
+import { RawRow } from '../../types/RawRow';
 
 type Yield = {
   apy: number,
@@ -62,20 +62,20 @@ export default async (): Promise<RawRow[]> => {
   const poolsWithYield: PoolWithYield[] = allPools.filter(hasYield);
 
   return poolsWithYield
-      .filter(isNotBeefy)
-      .map((pool: PoolWithYield): RawRow => {
-        const [coin1, coin2] = getCoinPair(pool);
+    .filter(isNotBeefy)
+    .map((pool: PoolWithYield): RawRow => {
+      const [coin1, coin2] = getCoinPair(pool);
 
-        const app = pool.platform || pool.id.split('_')[0];
+      const app = pool.platform || pool.id.split('_')[0];
 
-        return {
-          idUniqueToAPI: pool.id,
-          totalApyPercents: pool.yield.apy,
-          network: pool.chain.toUpperCase(),
-          app,
-          coin1,
-          coin2,
-          tvl: pool?.tvl?.usd,
-        };
-      });
+      return {
+        idUniqueToAPI: pool.id,
+        totalApyPercents: pool.yield.apy,
+        network: pool.chain.toUpperCase(),
+        app,
+        coin1,
+        coin2,
+        tvl: pool?.tvl?.usd,
+      };
+    });
 };
