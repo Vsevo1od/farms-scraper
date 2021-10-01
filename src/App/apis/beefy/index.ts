@@ -14,7 +14,7 @@ export default async (): Promise<RawRow[]> => {
         idUniqueToAPI,
         totalApyPercents: totalApy * 100,
         network: getNetwork(idUniqueToAPI),
-        app,
+        app: `beefy + ${app}`,
         coin1,
         coin2,
       };
