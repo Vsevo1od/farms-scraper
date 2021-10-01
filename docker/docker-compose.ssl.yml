@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  main-proxy:
+    volumes:
+      - ${WEB_SSL_CERTIFICATE_PATH}:/etc/ssl/web/cert.pem:ro
+      - ${WEB_SSL_CERTIFICATE_KEY_PATH}:/etc/ssl/web/privkey.pem:ro
+      - ${FARM_ARMY_PROXY_SSL_CERTIFICATE_PATH}:/etc/ssl/farmArmyProxy/cert.pem:ro
+      - ${FARM_ARMY_PROXY_SSL_CERTIFICATE_KEY_PATH}:/etc/ssl/farmArmyProxy/privkey.pem:ro
+    environment:
+      WEB_SSL_CERTIFICATE_PATH: ${WEB_SSL_CERTIFICATE_PATH}
+      WEB_SSL_CERTIFICATE_KEY_PATH: ${WEB_SSL_CERTIFICATE_KEY_PATH}
+      FARM_ARMY_PROXY_SSL_CERTIFICATE_PATH: ${FARM_ARMY_PROXY_SSL_CERTIFICATE_PATH}
+      FARM_ARMY_PROXY_SSL_CERTIFICATE_KEY_PATH: ${FARM_ARMY_PROXY_SSL_CERTIFICATE_KEY_PATH}

@@ -1,2 +1,5 @@
 FROM nginx
-COPY nginx.template.conf /etc/nginx/nginx.template.conf
+COPY nginx.template.ssl.conf /etc/nginx/nginx.template.ssl.conf
+COPY nginx.template.nossl.conf /etc/nginx/nginx.template.nossl.conf
+COPY buildConfig.sh /buildConfig.sh
+RUN chmod +x /buildConfig.sh

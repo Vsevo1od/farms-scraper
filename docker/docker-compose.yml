@@ -2,7 +2,7 @@ version: "3.7"
 services:
   main-proxy:
     build: ./mainProxy
-    command: /bin/bash -c "envsubst < /etc/nginx/nginx.template.conf > /etc/nginx/nginx.conf && nginx -g 'daemon off;'" 
+    command: /buildConfig.sh 
     environment:
       WEB_SERVER_NAME: ${WEB_SERVER_NAME}
       WEB_EXTERNAL_PORT: ${WEB_EXTERNAL_PORT}
@@ -10,6 +10,7 @@ services:
       FARM_ARMY_PROXY_SERVER_NAME: ${FARM_ARMY_PROXY_SERVER_NAME}
       FARM_ARMY_PROXY_EXTERNAL_PORT: ${FARM_ARMY_PROXY_EXTERNAL_PORT}
       FARM_ARMY_PROXY_CONTAINER_NAME: ${FARM_ARMY_PROXY_CONTAINER_NAME}
+      USE_SSL: ${USE_SSL}
   web:
     build: 
       context: ../
