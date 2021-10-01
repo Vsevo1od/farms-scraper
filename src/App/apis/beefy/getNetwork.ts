@@ -1,46 +1,16 @@
-import {
-  avalanchePools,
-  avalancheStakePools,
-  bscPools,
-  bscStakePools,
-  fantomPools,
-  fantomStakePools,
-  hecoPools,
-  hecoStakePools,
-  polygonPools,
-  polygonStakePools,
-  harmonyPools,
-  harmonyStakePools,
-} from '../../../beefyPools';
 import Network from '../../enums/Network';
+import NetworkId from '../../enums/NetworkId';
 
-const avalancheAll = [avalanchePools, avalancheStakePools].flat();
-const bscAll = [bscPools, bscStakePools].flat();
-const fantomAll = [fantomPools, fantomStakePools].flat();
-const hecoAll = [hecoPools, hecoStakePools].flat();
-const polygonAll = [polygonPools, polygonStakePools].flat();
-const harmonyAll = [harmonyPools, harmonyStakePools].flat();
-
-const getNetwork = (requestedId: string): Network => {
-  if (avalancheAll.map(({ id }) => id).includes(requestedId)) {
-    return Network.AVAX;
-  }
-  if (bscAll.map(({ id }) => id).includes(requestedId)) {
-    return Network.BSC;
-  }
-  if (fantomAll.map(({ id }) => id).includes(requestedId)) {
-    return Network.FTM;
-  }
-  if (hecoAll.map(({ id }) => id).includes(requestedId)) {
-    return Network.HECO;
-  }
-  if (polygonAll.map(({ id }) => id).includes(requestedId)) {
-    return Network.MATIC;
-  }
-  if (harmonyAll.map(({ id }) => id).includes(requestedId)) {
-    return Network.ONE;
-  }
-  return Network.UNKNOWN;
+const networkIdToNetwork: Record<NetworkId, Network> = {
+  [NetworkId.BSC]: Network.BSC,
+  [NetworkId.HECO]: Network.HECO,
+  [NetworkId.MATIC]: Network.MATIC,
+  [NetworkId.FTM]: Network.FTM,
+  [NetworkId.ARBITRUM]: Network.ARBITRUM,
+  [NetworkId.AVAX]: Network.AVAX,
+  [NetworkId.ONE]: Network.ONE,
 };
 
-export default getNetwork;
+export default function getNetwork(networkId: NetworkId) {
+  return networkIdToNetwork[networkId];
+}

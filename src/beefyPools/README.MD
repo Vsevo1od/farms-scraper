@@ -1,1 +1,0 @@
-It's a copy-paste from https://github.com/beefyfinance/beefy-app/tree/master/src/features/configure

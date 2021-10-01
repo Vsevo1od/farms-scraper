@@ -5,8 +5,8 @@ enum Network {
   HECO = 'HECO',
   MATIC = 'MATIC',
   ONE = 'ONE',
+  ARBITRUM = 'ARB',
   UNKNOWN = '',
-  ALL = 'ALL_NETWORKS',
 }
 
 export default Network;

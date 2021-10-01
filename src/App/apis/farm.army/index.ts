@@ -1,3 +1,4 @@
+import Network from '../../enums/Network';
 import { RawRow } from '../../types/RawRow';
 
 type Yield = {
@@ -39,6 +40,14 @@ const hasYield = (pool: Pool): pool is PoolWithYield => Number.isFinite(pool.yie
 const isBeefy = (pool: Pool): boolean => pool.platform === 'Other' && pool.id.startsWith('beefy_');
 const isNotBeefy = (pool: Pool): boolean => !isBeefy(pool);
 
+const isKnownNetwork = (network: string)
+: network is Network => Object.values(Network).includes(network as Network);
+function assertIsKnownNetwork(network: string): asserts network is Network {
+  if (!isKnownNetwork(network)) {
+    throw new Error(`Unknown network ${network}`);
+  }
+}
+
 function getCoinPair(pool: PoolWithYield): [string, string | undefined] {
   const tokensName = pool.token || pool.name.replace(/ B?LP/, '');
   const coins = tokensName.split('-');
@@ -67,11 +76,13 @@ export default async (): Promise<RawRow[]> => {
       const [coin1, coin2] = getCoinPair(pool);
 
       const app = pool.platform || pool.id.split('_')[0];
+      const network = pool.chain.toUpperCase();
+      assertIsKnownNetwork(network);
 
       return {
         idUniqueToAPI: pool.id,
         totalApyPercents: pool.yield.apy,
-        network: pool.chain.toUpperCase(),
+        network,
         app,
         coin1,
         coin2,
