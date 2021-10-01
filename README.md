@@ -1,6 +1,8 @@
+Website is deployed to https://farms-scraper.vsevo1od.ru/
+
 # How to start local dev
 ```bash
-docker-compose -f docker/docker-compose.yml up -d --build farmArmy
+./deploy.sh
 npm run start
 ```
 # How to deploy to prod
@@ -8,5 +10,5 @@ npm run start
 ```bash
 cp .env .env.local
 # update all variables in .env.local
-docker-compose -f docker/docker-compose.yml up -d --build
+./deploy.sh
 ```
