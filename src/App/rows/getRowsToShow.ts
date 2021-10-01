@@ -27,7 +27,8 @@ export default (
   && (filters.networks.length === 0 || filters.networks.includes(row.network))
   && (filters.apps.length === 0 || filters.apps.includes(row.app))
   && (filters.coins.length === 0 || areCoinsInRow(filters.coins, row))
-  && (filters.types.length === 0 || areRowOfTypes(filters.types, row));
+  && (filters.types.length === 0 || areRowOfTypes(filters.types, row))
+  && (filters.tvl || 0) <= (row.tvl || 0);
 
   const filterRows = () => sortedRows.filter(isRowShowed);
   return useMemo(filterRows, [sortedRows, filters]);

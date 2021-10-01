@@ -8,5 +8,6 @@ export interface Row {
   coin1: string,
   coin2?: string,
   coinsFormatted: string,
-  types: string[]
+  types: string[],
+  tvl?: number,
 }

@@ -10,6 +10,8 @@ export default function getComparatorByColumn(sortColumn: keyof Row): Comparator
       return (a, b) => a[sortColumn].localeCompare(b[sortColumn]);
     case 'totalApyFormatted':
       return (a, b) => a.totalApy - b.totalApy;
+    case 'tvl':
+      return (a, b) => (a.tvl || 0) - (b.tvl || 0);
     case 'types':
       return (a, b) => a.types.join('').localeCompare(b.types.join(''));
     default:

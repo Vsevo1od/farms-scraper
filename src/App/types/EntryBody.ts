@@ -1,3 +1,3 @@
 export type EntryBody = {
-    totalApy: number,
-  };
+  totalApy: number,
+};

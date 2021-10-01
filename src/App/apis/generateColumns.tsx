@@ -55,6 +55,13 @@ export default (
       .sort(),
   );
 
+  const moneyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+
+    maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+  });
+
   return [
     {
       key: 'totalApyFormatted',
@@ -104,6 +111,52 @@ export default (
         const percentOfMaxApyFlooredToNearest5 = Math.floor(percentOfMaxApy / 5) * 5;
 
         return `anti-gradient-${percentOfMaxApyFlooredToNearest5}`;
+      },
+    },
+    {
+      key: 'tvl',
+      name: 'TVL $',
+      headerCellClass: FILTER_COLUMN_CLASS_NAME,
+      headerRenderer: ({
+        isCellSelected,
+        column,
+        onSort,
+        sortDirection,
+        priority,
+        allRowsSelected,
+        onAllRowsSelectionChange,
+      }) => (
+        <FilterRenderer<Row, unknown, HTMLInputElement>
+          isCellSelected={isCellSelected}
+          column={column}
+          onSort={onSort}
+          sortDirection={sortDirection}
+          priority={priority}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        >
+          {({ filters: theFilters, tabIndex, ref }) => (
+            <TextField
+              tabIndex={tabIndex}
+              ref={ref}
+              type="number"
+              size="small"
+              InputProps={{ inputProps: { min: 0 } }}
+              value={theFilters.tvl}
+              onChange={({ target: { valueAsNumber } }: React.ChangeEvent<HTMLInputElement>) => {
+                setFilters({
+                  ...theFilters,
+                  tvl: Number.isFinite(valueAsNumber) ? valueAsNumber : 0,
+                });
+              }}
+              onKeyDown={inputNumberStopPropagation}
+            />
+          )}
+        </FilterRenderer>
+      ),
+      formatter({ row }) {
+        const text = row.tvl ? moneyFormatter.format(row.tvl) : '';
+        return (<span>{ text }</span>);
       },
     },
     {

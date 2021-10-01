@@ -14,4 +14,5 @@ export default (rawRows: RawRow[]): Row[] => rawRows.map((rawRow)
   coin2: rawRow.coin2,
   coinsFormatted: formatCoinsAsString(rawRow.coin1, rawRow.coin2),
   types: getCoinsTypes(rawRow.coin1, rawRow.coin2),
+  tvl: rawRow.tvl ? Math.round(rawRow.tvl) : undefined,
 }));

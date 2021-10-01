@@ -7,4 +7,5 @@ export type RawRow = {
   coin1: string,
   coin2?: string,
   restCoins?: string[],
+  tvl?: number,
 };

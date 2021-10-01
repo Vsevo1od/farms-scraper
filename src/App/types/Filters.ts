@@ -5,4 +5,5 @@ export interface Filters {
   apps: string[];
   coins: string[];
   types: string[];
+  tvl: number | '';
 }

@@ -24,6 +24,7 @@ const defaultFilters: Filters = {
   apps: [],
   coins: [],
   types: [],
+  tvl: '',
 };
 
 function App() {
