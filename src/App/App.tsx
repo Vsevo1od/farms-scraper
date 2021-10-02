@@ -3,7 +3,7 @@ import React, {
   useEffect, useMemo, useState,
 } from 'react';
 import DataGrid, { SortColumn } from 'react-data-grid';
-import generateColumns from './apis/generateColumns';
+import generateColumns from './columns';
 import loadData from './apis/loadAllData';
 import './App.scss';
 import { DEFAULT_HEADER_HEIGHT_PX, LINE_HEIGHT_PX } from './constants';
@@ -13,6 +13,7 @@ import { FilterContext } from './FilterRenderer/FilterRenderer';
 import calculateRequiredHeaderHeight from './header/calculateRequiredHeaderHeight';
 import getRowsToShow from './rows/getRowsToShow';
 import theme from './theme';
+import { ChangeFilterValue } from './types/ChangeFilterValue';
 import { Column } from './types/Column';
 import { Filters } from './types/Filters';
 import { Row } from './types/Row';
@@ -44,8 +45,12 @@ function App() {
 
   const rowsToShow = getRowsToShow(rows, sortColumns, filters);
 
+  const onColumnFilterValueChange: ChangeFilterValue = (filter, newValue) => setFilters(
+    { ...filters, ...{ [filter]: newValue } },
+  );
+
   const updateColumns = () => {
-    const updatedColumns = generateColumns(rows, setFilters);
+    const updatedColumns = generateColumns(rows, onColumnFilterValueChange);
     setColumns(updatedColumns);
   };
   useEffect(updateColumns, [rows]);

@@ -7,6 +7,11 @@ import { Filters } from '../types/Filters';
 // Context is needed to read filter values otherwise columns are
 // re-created when filters are changed and filter loses focus
 export const FilterContext = createContext<Filters | undefined>(undefined);
+export type FilterRendererChildren<T extends HTMLOrSVGElement> = (args: {
+  ref: React.RefObject<T>;
+  tabIndex: number;
+  filters: Filters;
+}) => React.ReactElement;
 
 function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   isCellSelected,
@@ -16,11 +21,7 @@ function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   sortDirection,
   priority,
 }: HeaderRendererProps<R, SR> & {
-  children: (args: {
-    ref: React.RefObject<T>;
-    tabIndex: number;
-    filters: Filters;
-  }) => React.ReactElement;
+  children: FilterRendererChildren<T>;
 }) {
   const filters = useContext(FilterContext)!;
   const { ref, tabIndex } = useFocusRef<T>(isCellSelected);
